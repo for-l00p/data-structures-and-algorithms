@@ -67,6 +67,20 @@ Tree.prototype = {
 		
 	},
 
+
+	map: function(callback){
+
+		(function recurse(currentNode){ 
+			callback(currentNode)
+			for (var i = 0; i < currentNode.children.length; i++){
+				recurse(currentNode.children.getNode(i)) 
+			};
+		})(this.getRoot()) 
+
+	},
+
+	
+
 	
 
 	insert: function(element, toElement, traversal) {
@@ -131,6 +145,8 @@ Tree.prototype = {
 		}
 
 	}
+
+
 }
 
 // var tree = new Tree(10);

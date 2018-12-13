@@ -1,5 +1,8 @@
 
 /**
+ *
+ *
+ * Sources: https://algs4.cs.princeton.edu/41graph/
  * 
 A tree is a connected graph with no cycles. 
 
@@ -13,19 +16,20 @@ An eulerian tour exists iff only all vertices have even degree.
 
 
 - What type of collection should be used to store each element of adjacency list? One could use an array-based list, a linked-list, or even a hashtable. 
-What we are looking for: Order is not relevant. Duplicates not allowed. So something implementing set interface (as oppopsed to list would do). 
+
+ What we are looking for: Order is not relevant. Duplicates not allowed. So something implementing set interface (as oppopsed to list would do). 
 
 
 - Should there be a second adjacency list, inadj, that stores, for each i, the list of vertices, j, such that(j,i) in E$? This can greatly reduce the running-time of the inEdges(i) operation, but requires slightly more work when adding or removing edges.
 
 - Should the entry for the edge i,j in adj[i] be linked by a reference to the corresponding entry in inadj[j]?
 
-- Should edges be first-class objects with their own associated data? In this way, adj would contain lists of edges rather than lists of vertices (integers).
+- Should edges be first-class objects with their own associated data? If yes, adjacency list would contain lists of edges rather than lists of vertices (integers).
 
 
 Most of these questions come down to a tradeoff between complexity (and space) of implementation and performance features of the implementation.
 
-- Is the graph directed? Is it weighted?Are Parallel edges and self-loops are permitted?
+- Is the graph directed? Is it weighted? (Can be represented by vertex, weight pairs in the adjacency list). Are Parallel edges and self-loops are permitted? Is the graph connected? 
 
 
 Graphs can be represented by:
@@ -66,7 +70,7 @@ https://stackoverflow.com/questions/1945099/java-which-is-the-best-implementatio
 /**
 
 
-This is a modern adjacency list implementation of a graph. The graph could be directed or undirect; the edges could be weighted or unweighted, and the vertice can correspond to any generic type (e.g. String or Integer).
+This is a modern adjacency list implementation of a graph. The graph could be directed or undirected; the edges could be weighted or unweighted, and the vertice can correspond to any generic type (e.g. String or Integer).
 
 We use a Map to hold each vertex's adjacency information. 
 The adjacency information contains:
@@ -74,159 +78,47 @@ The adjacency information contains:
 - a second adjacency list, inEdges, that stores, for each i, the list of vertices, j, such that(j,i) in E.  This can greatly reduce the running-time of the inIncidentEdges(i) operation, but requires slightly more work when adding or removing edges. 
 - a count of the vertex's indegree and outdegree. This allows us to  get degree information in O(1) time. 
 
-
+If the graph is undirected, the inEdges information is useless. 
 
 
 **/
 
-import java.util.Set;
+/******************************************************************************
+ *  Compilation:  javac ModernAdjacencyList.java
+ *  Execution:    java ModernAdjacencyList
+ *  Dependencies: Graph.java Edge.java
+ *  Data files:   
+ *
+ *
+
+ *
+ ******************************************************************************/
+
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
-
-
-interface Graph<V,E>{
-
-	/**
-	 * The interface body can contain abstract methods, default methods, and static methods. Default methods are defined with the default modifier, and static methods with the static keyword. All abstract, default, and static methods in an interface are implicitly public, so you can omit the public modifier.
-	 * 
-	 * In addition, an interface can contain constant declarations. All constant values defined in an interface are implicitly public, static, and final. Once again, you can omit these modifiers.
-	 * @return [description]
-	 */
-
-	// Basic container methods 
-	//int size();
-	boolean isEmpty();
-	//void replaceElement(V vertex);
-	//void swap(V vertex1, V vertex2);
-	int vertexCount();
-	int edgeCount();
-	Set<E> getEdges();
-	Set<V> getVertices();
-
-
-	//container modification methods
-	boolean addVertex(V vertex);
-	boolean addEdge(V source, V destination);
-	//  void addDirectedEdge(E edge);
-	V removeVertex(V vertex);
-	E removeEdge(V source, V destination);
-
-	// void setRoot(V vertex);
-
-	//  void hasCycle();
-	//  void isConnected();
-	// makeUndirected();
-	// reverseDirection();
-
-	//Vertex Adjacency methods
-	Set<V> getNeighbours(V vertex);
-	Set<E> inIncidentEdges(V vertex);
-	Set<E> outIncidentEdges(V vertex);
-	boolean isNeighbour(V vertex1, V vertex2);
-	int degree(V vertex);
-	int inDegree(V vertex);
-	int outDegree(V vertex);
-
-
-
-
-}
-
-
-class Edge<V>{
-
-	boolean isDirected = false;
-	private V source;
-	private V destination;
-	int weight = 1;
-
-	public Edge(){
-
-	}
-
-	public Edge(V source, V destination){
-		this.source = source;
-		this.destination = destination;
-		this.isDirected = false;
-		this.weight = 1;
-
-	}
-
-		public Edge(V source, V destination, boolean isDirected){
-		this(source, destination);
-		this.isDirected = isDirected;
-	}
-
-
-	public Edge(V source, V destination, boolean isDirected, int weight){
-		this(source, destination);
-		this.isDirected = isDirected;
-		this.weight = weight;
-
-	}
-
-	public boolean isDirected(){
-		return isDirected;
-	}
-
-	public boolean contains(final V vertex){
-		if (source == vertex || destination == vertex){
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public V source(){
-		return source;
-	}
-
-	public V destination(){
-		return destination;
-	}
-
-	public V opposite(final V vertex){
-		return (source == vertex) ? destination: source;
-	}
-
-	public Set<V> endVertices(){
-		Set<V> endVertices = new HashSet<V>();
-		endVertices.add(source);
-		endVertices.add(destination);
-		return endVertices;
-	}
-
-
-
-}
-
-
-class AdjacencyInfo<V>{
-
-	int inDegree;
-	int outDegree;
-	Set<Edge<V>> outEdges; 
-	Set<Edge<V>> inEdges ;
-	boolean isVisited;
-
-	public AdjacencyInfo(){
-		this.inDegree = 0;
-		this.outDegree = 0;
-		this.outEdges = new HashSet<>();
-		this.inEdges = new HashSet<>();
-	}
-
-
-
-}
 /**
  * Why final? One should make your class final unless you're explicitly intending it to be extended.
  */
+
+
  final class ModernAdjacencyList<V> implements Graph<V,Edge<V>>{
 
+
+
+ /*************************************************************************
+     					State Variables
+   ***************************************************************************/
+	
+
 	private Map<V,AdjacencyInfo<V>> vertices;
+	private int edgeCount;
+	private boolean weighted;
+	private boolean isGraphDirected;
+
 
 	/**
 	 * Why Map? It is preferred to use the interface as the type rather than the implementation. This makes it easier to change implementations in the future. Both because you specify the implementation in fewer places and because this forces you to code to the interface. Within our code, the fact that vertices is a HashMap and not a TreeMap is irrelevant. So just refer to it as a Map.  
@@ -236,13 +128,37 @@ class AdjacencyInfo<V>{
 	 * Should we also make it Final?  
 	 */
 
-	private boolean isGraphDirected;
-	private int edgeCount;
-	private boolean weighted;
+	class AdjacencyInfo<V>{
+
+		int inDegree;
+		int outDegree;
+		Set<Edge<V>> outEdges; 
+		Set<Edge<V>> inEdges ;
+		boolean isVisited;
+
+		public AdjacencyInfo(){
+			this.inDegree = 0;
+			this.outDegree = 0;
+			this.outEdges = new HashSet<>();
+			this.inEdges = new HashSet<>();
+		}
+
+
+
+	}
+
+
+
+ /*************************************************************************
+     					Constructors
+   ***************************************************************************/
+	
+
 
 	public ModernAdjacencyList(){
 
-		this.vertices = new HashMap<>();
+		this.vertices = new HashMap<V, AdjacencyInfo<V>>(); // Shouldn't use empty diamond  UNLESS you are defining AND instantiating on the same line. Map<V, AdjacencyInfo<V>> vertices = new HashMap<>() is OK, but if you define private AdjacencyInfo<V>> vertices, and then halfway down the page you instantiate with vertices = new new HashMap<>(), then it's not cool! What does vertices contain again? Oh, let me hunt around for the definition. Suddenly, the benefit of the diamond shortcut (where types are infered to reduce verbosity) goes bye bye.
+
 		this.edgeCount = 0;
 		this.isGraphDirected = false;
 	}
@@ -260,6 +176,16 @@ class AdjacencyInfo<V>{
 		this.weighted = weighted;
 		
 	}
+
+
+
+
+
+ /*************************************************************************
+     					Container Info Methods
+   ***************************************************************************/
+	
+
 
 	public boolean isEmpty(){
 		return vertices.isEmpty();
@@ -283,7 +209,7 @@ class AdjacencyInfo<V>{
 
 
 	public Set<V> getVertices(){
-		return vertices.keySet();
+		return new HashSet<V>(vertices.keySet());
 	}
 
 	public Set<Edge<V>> getEdges(){
@@ -299,20 +225,58 @@ class AdjacencyInfo<V>{
 	}
 
 
+
+	public String toString(){
+
+		String NEWLINE = System.getProperty("line.separator");
+		StringBuilder s = new StringBuilder();
+		for(Map.Entry<V, AdjacencyInfo<V>> vertex : vertices.entrySet()){
+			s.append(vertex.getKey() + NEWLINE);
+			AdjacencyInfo<V> adjacencyInfo = vertex.getValue();
+			s.append("outEdges: ");	
+			for(Edge<V> edge: adjacencyInfo.outEdges){
+				s.append(edge.source());
+				if(weighted){
+					s.append("-" + edge.weight+ "-");
+				} else {
+					s.append("-" + "-");
+				}
+				
+				s.append(edge.destination());
+				s.append(", ");
+			}
+			if(isGraphDirected){
+				s.append(NEWLINE);
+				s.append("inEdges: ");	
+				for(Edge<V> edge: adjacencyInfo.inEdges){
+					s.append(edge.source());
+					s.append("--> ");
+					s.append(edge.destination());
+					s.append(", ");
+				}
+			}
+			
+			s.append(NEWLINE);
+			s.append(NEWLINE);
+
+		}
+
+		return s.toString();
+
+	}
+
+
+
+		
+	private void validateVertex(V vertex){
+		if(!vertices.containsKey(vertex)) throw new IllegalArgumentException("Vertex not present in Graph:" + vertex);
+	}
+
  /*************************************************************************
      					Graph Modification Methods
    ***************************************************************************/
 
-	public boolean addVertex(V vertex){
 
-		if(vertices.containsKey(vertex)){
-			return false;
-		} else {
-			vertices.put(vertex, new AdjacencyInfo<V>());
-			return true;
-		}
-
-	}
 
 
 /**
@@ -330,8 +294,9 @@ class AdjacencyInfo<V>{
 
 	public boolean addEdge(V source, V destination){
 
-		if(!vertices.containsKey(source) || !vertices.containsKey(destination)) throw new IllegalArgumentException("Atleast one vertex is not present in Graph");
-
+		validateVertex(source);
+		validateVertex(destination);
+	
 		Set<Edge<V>> destinationEdges;
 		if(isGraphDirected){
 			destinationEdges = inIncidentEdges(destination);
@@ -352,11 +317,50 @@ class AdjacencyInfo<V>{
 			edgeCount++;
 			return true;
 		} else {
-			System.out.println("Edge addition failed");
+			System.out.println("Possible failed edge addition " + edge.print());
 			return false;
 		}
 		
 	}
+
+	public boolean addEdge(V source, V destination, double weight){
+
+		validateVertex(source);
+		validateVertex(destination);
+	
+		Set<Edge<V>> destinationEdges;
+		if(isGraphDirected){
+			destinationEdges = inIncidentEdges(destination);
+		} else {
+			destinationEdges = outIncidentEdges(destination);
+		}
+
+		Set<Edge<V>> sourceEdges = outIncidentEdges(source); 
+
+		Edge<V> edge;
+		if(isGraphDirected){
+			 edge = new Edge<>(source, destination, true, weight);
+		} else {
+			 edge = new Edge<>(source, destination, weight);
+		}
+
+		if((sourceEdges.add(edge) && destinationEdges.add(edge))){
+			edgeCount++;
+			return true;
+		} else {
+			if(sourceEdges == destinationEdges){
+				return true;
+			} else {
+				System.out.println("Possible failed edge addition " + edge.print());
+				return false;
+			}
+			
+		}
+		
+	}
+
+
+
 
 /**
  * In an undirected graph, removes edges containing the vertex from its neighbours. The vertex might be in source or destination of an edge. 
@@ -364,13 +368,62 @@ class AdjacencyInfo<V>{
  * @param  vertex to be removed
  * @return  vertex the removed vertex
  */
-	public V removeVertex(V vertex){
 
-		if(!vertices.containsKey(vertex)){
-			throw new IllegalArgumentException("Vertex not in Graph");
+
+	public void removeEdge(V source, V destination){
+		validateVertex(source);
+		validateVertex(destination);
+
+		Set<Edge<V>> sourceOutEdges = vertices.get(source).outEdges;
+
+		Edge<V> edgeInSource = null;
+		for(Edge<V> edge: sourceOutEdges) {
+			if (edge.contains(destination)){
+				edgeInSource = edge;
+				break;
+			}
+		}
+		sourceOutEdges.remove(edgeInSource);
+
+
+		Set<Edge<V>> destinationEdges;	
+		Edge<V> edgeInDestination = null;
+
+		if(isGraphDirected){
+			destinationEdges = vertices.get(destination).inEdges;
+		} else {
+			destinationEdges = vertices.get(destination).outEdges;
 		}
 
+		for(Edge<V> edge: destinationEdges) {
+			if (edge.contains(source)){
+				edgeInDestination = edge;
+				break;
+			}
+		}
+
+		destinationEdges.remove(edgeInDestination);	
+
 		
+		//return edgeInSource;
+	}
+
+
+
+	public boolean addVertex(V vertex){
+
+		if(vertices.containsKey(vertex)){
+			return false;
+		} else {
+			vertices.put(vertex, new AdjacencyInfo<V>());
+			return true;
+		}
+
+	}
+
+	public void removeVertex(V vertex){
+
+		validateVertex(vertex);
 		
 		Set<Edge<V>> outEdges= outIncidentEdges(vertex);
 
@@ -406,51 +459,12 @@ class AdjacencyInfo<V>{
 		} 
 		
 		vertices.remove(vertex);
-		return vertex;
+		//return vertex;
 
 	}
 
 
 
-
-	public Edge<V> removeEdge(V source, V destination){
-
-		if(!vertices.containsKey(source) || !vertices.containsKey(destination)) throw new IllegalArgumentException("Vertices not found");
-
-
-		Set<Edge<V>> sourceOutEdges = vertices.get(source).outEdges;
-
-		Edge<V> edgeInSource = null;
-		for(Edge<V> edge: sourceOutEdges) {
-			if (edge.contains(destination)){
-				edgeInSource = edge;
-				break;
-			}
-		}
-		sourceOutEdges.remove(edgeInSource);
-
-
-		Set<Edge<V>> destinationEdges;	
-		Edge<V> edgeInDestination = null;
-
-		if(isGraphDirected){
-			destinationEdges = vertices.get(destination).inEdges;
-		} else {
-			destinationEdges = vertices.get(destination).outEdges;
-		}
-
-		for(Edge<V> edge: destinationEdges) {
-			if (edge.contains(source)){
-				edgeInDestination = edge;
-				break;
-			}
-		}
-
-		destinationEdges.remove(edgeInDestination);	
-
-		
-		return edgeInSource;
-	}
 
 
 
@@ -458,13 +472,12 @@ class AdjacencyInfo<V>{
      					Vertex adjacency methods
    ***************************************************************************/
 	
-	
+
+// Remarkably, we can build all of the algorithms that we consider in this section on the basic abstraction embodied in getNeighbours.
+
 	public Set<V> getNeighbours(final V vertex){
 
-		if(!vertices.containsKey(vertex)){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		} 
-
+		validateVertex(vertex);
 		Set<Edge<V>> outEdges = vertices.get(vertex).outEdges;
 		Set<V> neighbours = new HashSet<>();
 		for(Edge<V> edge: outEdges){
@@ -477,20 +490,15 @@ class AdjacencyInfo<V>{
 
 
 	public Set<Edge<V>> inIncidentEdges(final V vertex){
-		if(!vertices.containsKey(vertex)){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		}
 
+		validateVertex(vertex);
 		Set<Edge<V>> inEdges = vertices.get(vertex).inEdges;
 		return inEdges;
 	}
 
 	public Set<Edge<V>> outIncidentEdges(final V vertex){
 
-		if(!vertices.containsKey(vertex)){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		}
-
+		validateVertex(vertex);
 		Set<Edge<V>> outEdges = vertices.get(vertex).outEdges;
 		return outEdges;
 	}
@@ -498,35 +506,27 @@ class AdjacencyInfo<V>{
 
 	public int degree(final V vertex){
 
-		if(!vertices.containsKey(vertex)){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		}
-
+		validateVertex(vertex);
 		return vertices.get(vertex).outEdges.size();
 	}
 
 	public int inDegree(final V vertex){
 
-		if(vertices.containsKey(vertex) == false){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		}
-
+		validateVertex(vertex);
 		return vertices.get(vertex).inEdges.size();
 
 	}
 
 	public int outDegree(final V vertex){
 
-		if(vertices.containsKey(vertex) == false){
-			throw new IllegalArgumentException("Vertex not in Graph");
-		}
-
+		validateVertex(vertex);
 		return vertices.get(vertex).outEdges.size();
 	}
 
 	public boolean isNeighbour(V source, V destination){
 
-		if(!vertices.containsKey(source) || !vertices.containsKey(destination)) throw new IllegalArgumentException("Atleast one vertex not found");
+		validateVertex(source);
+		validateVertex(destination);
 
 		Set<Edge<V>> outEdges = vertices.get(source).outEdges;
 		for(Edge<V> edge: outEdges){
@@ -539,6 +539,13 @@ class AdjacencyInfo<V>{
 	}
 
 
+
+
+
+
+
+
+
 /**
  * Unit tests the BST data structure
  * @param args the command-line arguments
@@ -547,11 +554,35 @@ class AdjacencyInfo<V>{
 
 	public static void main(String[] args){
 
-		ModernAdjacencyList<String> test = new ModernAdjacencyList<>();
-		test.addVertex("Delhi");
-		System.out.println(test.vertexCount());
-		System.out.println(test.edgeCount());
-		
+	  Graph<String, Edge<String>> testGraph = new ModernAdjacencyList<>(true);
+      testGraph.addVertex("Delhi");
+      testGraph.addVertex("Gurgaon");
+      testGraph.addVertex("Chandigarh");
+      testGraph.addVertex("Bangalore");
+      testGraph.addVertex("Mumbai");
+      testGraph.addVertex("London");
+      testGraph.addVertex("Noida");
+      testGraph.addVertex("Singapore");
+      testGraph.addVertex("Thailand");
+      testGraph.addVertex("Indonesia");
+      testGraph.addEdge("Indonesia", "Thailand");
+      testGraph.addEdge("Indonesia", "Noida");
+      testGraph.addEdge("Delhi", "Noida");
+      testGraph.addEdge("Delhi", "Mumbai");
+      testGraph.addEdge("London", "Thailand");
+      testGraph.addEdge("Mumbai", "Thailand");
+      testGraph.addEdge("Chandigarh", "Gurgaon");
+      testGraph.addEdge("Thailand", "Gurgaon");
+      testGraph.addEdge("London", "Chandigarh");
+      testGraph.addEdge("Noida", "Chandigarh");
+      testGraph.addEdge("Chandigarh", "Delhi");
+      testGraph.addEdge("Delhi", "Singapore");
+      testGraph.addEdge("Indonesia", "Singapore");
+      System.out.println(testGraph.vertexCount());
+      System.out.println(testGraph.edgeCount());
+      System.out.println(testGraph.toString());
+
+
 
 
 	}

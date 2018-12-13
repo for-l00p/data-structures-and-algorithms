@@ -321,7 +321,19 @@ BinarySearchTree.prototype = {
  
 			let nodeToMove = this.successor(node)
 			oneChildFlip(nodeToMove)
-			
+
+			//Copy the successor's content in the original node. 	
+
+			if(node.parent){
+				if(node == node.parent.leftChild){
+					childType = "leftChild"
+				} else {
+					childType = "rightChild"
+				}
+
+				node.parent[childType] = nodeToMove;  
+			}
+
 			nodeToMove.parent = node.parent
 			nodeToMove.leftChild = node.leftChild
 			nodeToMove.rightChild = node.rightChild
@@ -329,6 +341,7 @@ BinarySearchTree.prototype = {
 			if(node.rightChild){
 				node.rightChild.parent = nodeToMove
 			}
+			console.log(nodeToMove)
 			
 
 		}
@@ -469,6 +482,7 @@ BinarySearchTree.prototype = {
 				}
 			}
 		}
+		//Check this: does this ever terminate? is currentNode null at the end?
 
 		if (order === 'inOrder2'){
 			// Here we start with a stack empty (as opposed to the stack containing the root). The currentNode emulates the input to a recursive call, and each loop emulates a recursive call, starting with the first call. This is a neater code.  
@@ -591,11 +605,15 @@ BinarySearchTree.prototype = {
 
 			while(!nodeStack.isEmpty()){
 				var currentNode = nodeStack.pop()
+				console.log("Pushing " + currentNode.getElement());
 				reverseStack.push(currentNode)
 				if (currentNode.leftChild){
+					//console.log("Pushing " + currentNode.leftChild.getElement());
 					nodeStack.push(currentNode.leftChild)
+
 				}
 				if (currentNode.rightChild){
+					//console.log("Pushing " + currentNode.rightChild.getElement());
 					nodeStack.push(currentNode.rightChild)
 				}
 			}
@@ -662,13 +680,20 @@ console.log("Printing inOrder now")
 
  tree.delete(tree.search(5))
 
-console.log("Printing postOrder now")
+console.log("Printing postOrder2 now")
 
  tree.traverseDF2(function(node){
  	console.log(node.getElement())
- }, 'postOrder4')
+ }, 'postOrder2')
 
-console.log("Searching now")
+console.log("Printing postOrder3 now")
+
+  tree.traverseDF2(function(node){
+ 	console.log(node.getElement())
+ }, 'postOrder3')
+
+
+//console.log("Searching now")
 //console.log(tree.searchIterative(20))
 //console.log(tree.findMin())
 
