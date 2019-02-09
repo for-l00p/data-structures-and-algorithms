@@ -19,7 +19,15 @@ enum Rank {
 
 	private final Character letter;
 	private static final Map<Character, Rank> charMap = new HashMap<>();
-
+	/**
+	 * 
+	 * Another option: switch (value) {
+    	case 'A' : return ACE;
+    	case 'K' : return KING;
+    	....
+		}
+		The above code does not have the overhead of the char -> Character translation and all the map overheads.
+	 */
 	static {
 		for (Rank r: Rank.values()){
 			charMap.put(r.getChar(), r);

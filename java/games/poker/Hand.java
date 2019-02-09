@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+
 class Hand implements Comparable<Hand> {
 
 	private HandRank rank;
 	private List<Card> bestOfFive = new ArrayList<>();
-
 
 	public Hand(List<Card> inputCards){
 		this.rank = evaluateRank(inputCards);

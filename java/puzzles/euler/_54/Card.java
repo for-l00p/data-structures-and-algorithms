@@ -28,6 +28,7 @@ class Card implements Comparable<Card> {
 		return this.rank.getValue();
 	}
 
+	// The natural ordering for a class C is said to be consistent with equals if and only if e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2) for every e1 and e2 of class C. In practice, what this means is that in every case where you implement Comparable, you also need to override the equals and hashCode() methods.
 	public int compareTo(Card c){
 		return rank.compareTo(c.rank);
 	}

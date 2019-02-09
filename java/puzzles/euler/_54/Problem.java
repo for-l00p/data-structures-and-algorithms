@@ -20,6 +20,13 @@ class Problem {
 			cardList.add(card);
 		}
 		return cardList;
+		/**Another option in Java8"
+		 * List<Card> cardList = Stream.of(nextLine.split(" "))
+    		.map(c -> new Card(c))
+   		    .collect(Collectors.toList());
+   		    List<Card> first = cardList.subList(0, 5);
+			List<Card> second = cardList.subList(5, 10);
+		 */
 	}
 		
 	public static void main(String[] args){

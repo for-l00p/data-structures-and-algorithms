@@ -19,6 +19,8 @@ class Hand implements Comparable<Hand> {
 		System.out.println("Best 5 Cards: " + this.toString());
 	}
 
+	
+
 	public int compareTo(Hand h2){
 		if (h2 == null) {return 1;}
 		if (this.rank.compareTo(h2.rank) != 0){
@@ -26,6 +28,12 @@ class Hand implements Comparable<Hand> {
 		} else {
 			return compareBestOfFive(this.bestOfFive, h2.bestOfFive);
 		}
+	}
+
+	// The natural ordering for a class C is said to be consistent with equals if and only if e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2) for every e1 and e2 of class C. In practice, what this means is that in every case where you implement Comparable, you also need to override the equals and hashCode() methods.By having a correct implementation for these you can then rely on using them as keys in Maps, etc. It is good practice to implement things correctly.
+	@Override
+	public boolean equals(Object other) {
+    	return other instanceof Hand && compareTo((Hand)other) == 0;
 	}
 
 	private int compareBestOfFive(List<Card> h1, List<Card> h2){

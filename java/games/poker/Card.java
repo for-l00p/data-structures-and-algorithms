@@ -17,11 +17,8 @@ class Card implements Comparable<Card> {
 		return this.suit;
 	}
 
-	public int getValue(){
-		return this.rank.getValue();
-	}
 
-	public int compareTo(Card c){
+	protected int compareTo(Card c){
 		return rank.compareTo(c.rank);
 	}
 
