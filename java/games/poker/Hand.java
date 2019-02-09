@@ -1,3 +1,4 @@
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -6,17 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ListIterator;
 
-
-/**
-Hand is an abstraction of a set of 7 cards, such that they can be compared (Here the comparison is based on Poker hand hierarchy, but we can conceivably change this). 
-
-The Hand Class maps the set-of-7 cards to a {best-of-5-hand, HandRank}, where HandRank is the property of best-of-5-hand such as Flush, Straight etc. The best-of-5-hand are sorted based on Card-Rank (highest first). To compare, the HandRank is first compared. If two sets-of-7 have the same HandRank, then their best-of-5-hands are compared on Card.Rank, starting from the left. 
-
-the evaluateHand method and generates/stores the HandRank, the primary card, the secondary card and the kicker. This method maps each Hand object to a (HandRank, primaryCard, secondaryCard, Kicker).
-
-If two hands have the same HandRank (e.g. two hands mapping to two pair), then the primaryCard is used to break the tie. If the tie is still not broken(same primary card), then the secondaryCard is used. 
-*/
-	
 class Hand implements Comparable<Hand> {
 
 	private HandRank rank;
@@ -136,20 +126,20 @@ class Hand implements Comparable<Hand> {
 		Card nextCard;
 		while (listIterator.hasNext()){
 			nextCard = listIterator.next();
-			if (nextCard.getValue() == currentCard.getValue() - 1 ){
+			if (nextCard.getRank().ordinal() == currentCard.getRank().ordinal() - 1 ){
 				result.add(nextCard);
 				if (result.size() == 5){
 					return result;
 				}
 					//Check for Wheel Straight
-				if (result.size() == 4 && nextCard.getValue() == 2){
-					if (tempList.get(0).getValue() == 14){
+				if (result.size() == 4 && nextCard.getRank().ordinal() == 0){
+					if (tempList.get(0).getRank().ordinal() == 12){
 						result.add(tempList.get(0));
 						return result;
 					}
 				}
 
-			} else if (nextCard.getValue() == currentCard.getValue()){
+			} else if (nextCard.getRank() == currentCard.getRank()){
 					// do nothing 	
 			} else {
 				result.clear();

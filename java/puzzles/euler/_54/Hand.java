@@ -1,3 +1,4 @@
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -125,20 +126,20 @@ class Hand implements Comparable<Hand> {
 		Card nextCard;
 		while (listIterator.hasNext()){
 			nextCard = listIterator.next();
-			if (nextCard.getValue() == currentCard.getValue() - 1 ){
+			if (nextCard.getRank().ordinal() == currentCard.getRank().ordinal() - 1 ){
 				result.add(nextCard);
 				if (result.size() == 5){
 					return result;
 				}
 					//Check for Wheel Straight
-				if (result.size() == 4 && nextCard.getValue() == 2){
-					if (tempList.get(0).getValue() == 14){
+				if (result.size() == 4 && nextCard.getRank().ordinal() == 0){
+					if (tempList.get(0).getRank().ordinal() == 12){
 						result.add(tempList.get(0));
 						return result;
 					}
 				}
 
-			} else if (nextCard.getValue() == currentCard.getValue()){
+			} else if (nextCard.getRank() == currentCard.getRank()){
 					// do nothing 	
 			} else {
 				result.clear();

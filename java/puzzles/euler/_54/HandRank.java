@@ -1,3 +1,4 @@
+
 enum HandRank {
 	HIGH_CARD,
 	PAIR,

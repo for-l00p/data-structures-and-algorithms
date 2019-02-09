@@ -824,7 +824,7 @@ class Poker {
 
 	public static void main(String args[]){
 		
-		Poker poker = new Poker(3, 2); // Input Parameters: numPlayers, numRounds 
+		Poker poker = new Poker(2, 2); // Input Parameters: numPlayers, numRounds 
 		
 	}
 

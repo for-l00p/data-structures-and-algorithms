@@ -1,5 +1,4 @@
 
-
 import java.lang.reflect.Field;
 
 class Card implements Comparable<Card> {

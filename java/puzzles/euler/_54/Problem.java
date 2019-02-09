@@ -1,4 +1,5 @@
 
+
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.nio.file.Path;
 
 
 
-class Problem54 {
+class Problem {
 
 	private static List<Card> convertLineToCards(String line){
 		String[] cardStrings = line.split(" ");
