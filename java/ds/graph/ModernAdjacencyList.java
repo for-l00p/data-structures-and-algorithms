@@ -61,8 +61,25 @@ Adjacency Matrix Modern: a two dimensional array of references to unordered sequ
 Good for dense, static graphs  with small number of vertices where edge information is relevant.
 
 Though the exact implementation might be application dependent. For example, if a very frequent operation you need is to find the vertex with max degree, which would take  O(n) if you maintain degree in adjacency list or matrix, it might be recommended to use the priority queue, which would give you O(1)
+
 https://stackoverflow.com/questions/1945099/java-which-is-the-best-implementation-structure-for-graph
 
+
+There isn’t one. Seriously. There’s never a “best” data structure for representing something as general as “a graph”.
+
+Graphs can be represented by matrices, or lists, or sets, or heaps, or queues, or hash tables, or trees, or tries, or a distributed table of heaps of lists of pointers to vectors with twenty ancillary hash tables.
+
+How many vertices are you expecting to hold? 100? 10,000? 10,000,000,000? How many edges, or what’s the expected average degree? What sort of things do you need to do with the graph? Does it frequently update? Do you need to calculate connected components? 𝑘-connected components? Planar embeddings? Independent sets? Colorings? Eigenvalues? Flows? Paths? Local features? Global features? How quickly? How often? How accurately? How reliably?
+
+Once you have an idea about the answers to those questions you can start evaluating possible data structures and implementations. “A graph” really says nothing at all about what you’re trying to achieve, and “best data structure” is almost never a meaningful concept.
+
+Adjacency matrices are pretty good for dense, directed graphs. They’re very compact with only one bit per edge (if you do it right). But if the graph is undirected then the matrix is redundant (it’s symmetric) so we could save half the space. If the graph is bipartite then that’s even worse.
+
+For sparse graphs, it is usual to either have an adjacency list per node, or to store just the edges in a lookup structure such as a hash table. But some graph algorithms become inefficient or have to be rewritten to work well on a sparse graph representation. For example, the scipy.sparse matrix package has seven different sparse matrix representations. (It typically recommends compressed sparse column/row formats for graph algorithms, but the others may be better for I/O or storage.)
+
+. In any case, you will want to encapsulate all this in primitives such as ListNeighbors(v) and IsAdjacent(u,v) that you can use to implement various graph algorithms.
+
+https://www.quora.com/What-is-the-best-data-structure-for-representing-a-graph-in-computer-science
  */
 
 

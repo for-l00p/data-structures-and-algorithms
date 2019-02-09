@@ -31,32 +31,26 @@ function merge(A,start,mid,end){ //Merges A[s....mid] and A[mid+1....e].
 
 		else {
 			finalArray.push(A[j]);
-			j++
-			
+			j++		
 		}
 
 	}
 
 	while (j <= end ){
 			finalArray.push(A[j]);
-			j++
-			
+			j++			
 		}
 	
 	while (i <= mid ){
 			finalArray.push(A[i]);
-			i++
-			
+			i++		
 		}	
-
-	
 
 	for(var q = start; q <end+1;q++){
 		A[q] = finalArray[q-start]
 	}
 
 	console.log("mergedArray: " + finalArray);
-
 }
 
 

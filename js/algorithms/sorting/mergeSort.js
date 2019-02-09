@@ -4,7 +4,7 @@ function merge(A, B){
 	var i = 0;
 	var j = 0;
 	var finalArray = [];
-	total++
+	// total++
 	while(i < A.length && j < B.length){
 		//console.log("Comparing: " + A[i], B[j])
 		if (A[i] <= B[j]){
@@ -52,9 +52,9 @@ function mergeSort(A){
 	//console.log("j is: " + j)
 
 	var array1 = A.slice(0,j);
-	total++
+	// total++
 	var array2 = A.slice(j);
-	total++
+	// total++
 	//console.log("Merging: " + array1 + "and " +  array2)
 	return merge(mergeSort(array1), mergeSort(array2));
 
