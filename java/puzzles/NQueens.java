@@ -1,5 +1,7 @@
 
 import java.util.*;
+// https://stackoverflow.com/questions/2894443/8-queens-algorithm-example
+// 
 public class NQueens{
 
 	private static int[] q;
