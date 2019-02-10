@@ -1,3 +1,8 @@
+
+package games.poker;
+
+import java.lang.reflect.Field;
+
 class Card implements Comparable<Card> {
 
 	private final Suit suit;
@@ -18,7 +23,7 @@ class Card implements Comparable<Card> {
 	}
 
 
-	protected int compareTo(Card c){
+	public int compareTo(Card c){
 		return rank.compareTo(c.rank);
 	}
 

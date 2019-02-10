@@ -1,3 +1,7 @@
+
+
+package games.poker;
+
 enum HandRank {
 	HIGH_CARD,
 	PAIR,
