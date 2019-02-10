@@ -19,7 +19,7 @@ final class Deck {
 		}
 	}
 
-	public Card pop(){
+	public Card dealCard(){
 		return cards.remove(0);
 	};
 

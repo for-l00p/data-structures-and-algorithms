@@ -16,7 +16,6 @@ final class GameEngine {
 		List<Player> players = new ArrayList<>();
 		Scanner in = new Scanner(System.in);
 		int count = 1;
-
 		do {
 			System.out.println("Player " + count + ", please enter your name:");
 			String playerName = in.nextLine();
@@ -29,23 +28,16 @@ final class GameEngine {
 		return players; 
 	}
 
-	public static int initMinimumBet(){
+	public static int askForMinimumBet(){
 		Scanner in = new Scanner(System.in);
 		System.out.println("Please enter minimum bet:");
 		int minimumBet = in.nextInt();
 		return minimumBet;
 	}
 
-	public static void setTable (Game game){
-		game.pot = 0;
-		game.openCards = new ArrayList<Card>();
-		game.currentDeck = new Deck();
-		game.currentDeck.shuffle();
-		game.currentTurnIndex = game.smallBlindIndex;
-		game.currentMaxBet = game.minimumBet;
-	}
+	
 
-	public static void setPlayerStatus(Game game){
+	public static void setPlayerStatus(Round game){
 			List<Player> players = game.players;
 			int n = players.size();
 			Player player;
@@ -53,26 +45,26 @@ final class GameEngine {
 				player = players.get(i);
 				player.resetCurrentBet();
 				player.setPlayingStatus(PlayingStatus.PLAYING);
-				player.setRoundTurn(false);
+				player.setBettingTurn(false);
 				player.resetHoleCards();
 
 			}
 
 	}
 
-	public static void dealCards(Game game, int numCards){
+	public static void dealCards(Round game, int numCards){
 			for (int i = 1; i <= numCards;i++){
 				dealOneCard(game);
 			}
 	}
 
-	private static void dealOneCard(Game game){
+	private static void dealOneCard(Round game){
 			List<Player> players = game.players;
 			int n = players.size();
 			int smallBlindIndex = game.smallBlindIndex;
 			for (int i = 0;  i  < n;  i++){
 				Player nextPlayer = players.get((smallBlindIndex + i) %n);
-				Card nextCard = game.currentDeck.pop();
+				Card nextCard = game.currentDeck.dealCard();
 				nextPlayer.addHoleCard(nextCard);
 				
 			}
@@ -80,21 +72,21 @@ final class GameEngine {
 
 
 
-	private static boolean checkIfAllPlayersMatchedBet(Game game){
-			for (Player player: game.players){
-				if (player.getPlayingStatus() == PlayingStatus.PLAYING){
-					if(player.getCurrentBet() != game.currentMaxBet){
-						return false;
-					}	
-				}
-				
+	private static boolean checkIfAllPlayersMatchedBet(Round game){
+		for (Player player: game.players){
+			if (player.getPlayingStatus() == PlayingStatus.PLAYING){
+				if(player.getCurrentBet() != game.currentMaxBet){
+					return false;
+				}	
 			}
-			return true;
+				
+		}
+		return true;
 	}
 
 
 
-	private static boolean checkIfMoreThanOnePlayerPlaying (Game game){
+	private static boolean checkIfMoreThanOnePlayerPlaying (Round game){
 			int count = 0;
 			for (Player player: game.players){
 				if(player.getPlayingStatus() == PlayingStatus.PLAYING){
@@ -106,9 +98,9 @@ final class GameEngine {
 	}
 
 
-	private static boolean checkIfAllPlayersHadTurn(Game game){
+	private static boolean checkIfAllPlayersHadTurn(Round game){
 			for (Player player: game.players){
-				if(player.hadRoundTurn() == false){
+				if(player.hadBettingTurn() == false){
 					return false;
 				}
 			}
@@ -116,19 +108,19 @@ final class GameEngine {
 	}
 
 
-	public static void clearBettingHistory(Game game){
+	public static void clearBettingHistory(Round game){
 			game.minimumBet = 0;
 			game.currentMaxBet = 0;
 			game.currentTurnIndex = game.smallBlindIndex;
 			for (Player player: game.players){
 					player.resetCurrentBet();
-					player.setRoundTurn(false);
+					player.setBettingTurn(false);
 				}
 				
 	}
 		
 
-	public static void doBlindBetting(Game game){
+	public static void doBlindBetting(Round game){
 
 			Player smallBlindPlayer = game.players.get(game.smallBlindIndex);
 			int smallBlindStack = smallBlindPlayer.getStackAmount();
@@ -163,14 +155,14 @@ final class GameEngine {
 
 	}
 
-	public static void doBettingRound(Game game){
+	public static void doBettingRound(Round game){
 			do {
 				if(!checkIfMoreThanOnePlayerPlaying(game)){
 					System.out.println("All other players folded or all in");
 					return;
 				}
 				Player currentPlayer = game.players.get(game.currentTurnIndex);
-				currentPlayer.setRoundTurn(true);
+				currentPlayer.setBettingTurn(true);
 				askForBet(game, currentPlayer); //Does nothing if player is folded. 
 				game.currentTurnIndex = (game.currentTurnIndex + 1) % game.players.size();						
 			} while (
@@ -186,7 +178,7 @@ final class GameEngine {
 		 * @param game   [description]
 		 * @param player [description]
 		 */
-	private static void askForBet(Game game, Player player){
+	private static void askForBet(Round game, Player player){
 			if(player.getPlayingStatus() == PlayingStatus.FOLDED || player.getPlayingStatus() == PlayingStatus.ALLIN){
 				return;
 			} else {
@@ -221,7 +213,7 @@ final class GameEngine {
 		 * @param bet    [description]
 		 */
 
-	private static void makeBet(Game game, Player player, int minBet, int bet ){
+	private static void makeBet(Round game, Player player, int minBet, int bet ){
 			if (bet < minBet ){
 				player.setPlayingStatus(PlayingStatus.FOLDED);
 				System.out.println(player.getName() + " has folded");
@@ -229,7 +221,7 @@ final class GameEngine {
 						//Update player state
 				player.addToBet(bet);
 				player.removeFromStack(bet);
-						//Update Game state
+						//Update Round state
 				game.currentMaxBet = Math.max(player.getCurrentBet(), game.currentMaxBet);
 				game.pot = game.pot + bet;
 				System.out.println(player.getName() + " has made a bet of " + bet);
@@ -239,22 +231,22 @@ final class GameEngine {
 	}
 
 
-	public static void openCards(Game game, int num){
+	public static void openCards(Round game, int num){
 			for (int i = 1; i <= num; i++){
-				Card nextCard = game.currentDeck.pop();
+				Card nextCard = game.currentDeck.dealCard();
 				game.openCards.add(nextCard);
 				System.out.println("Next card to be opened is:" + nextCard.toString());
 			}
 	}
 
-	public static void distributeWinnings(Game game, Player player){
+	public static void distributeWinnings(Round game, Player player){
 			player.addToStack(game.pot);
 			 System.out.println(player.getName() + " won a pot of " + game.pot + ". His stack now: " + player.getStackAmount());
 	}
 
 
 
-	public static void showOfHands(Game game){
+	public static void showOfHands(Round game){
 		Hand tempbest = null;
 		Player tempWinner = null;
 		for (Player player: game.players){

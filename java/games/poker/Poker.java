@@ -11,11 +11,11 @@ final class Poker {
 
 	public Poker (int numPlayers, int numRounds){
 		List<Player> players = GameEngine.initPlayers(numPlayers);
-		int minimumBet = GameEngine.initMinimumBet();
+		int minimumBet = GameEngine.askForMinimumBet();
 		for (int i = 0; i < numRounds; i ++ ){
 			int smallBlindIndex = i % players.size();
-			Game game = new Game(players, smallBlindIndex , minimumBet);
-			game.runRound();
+			Round round = new Round(players, smallBlindIndex , minimumBet);
+			round.run();
 		}
 	}
 	
