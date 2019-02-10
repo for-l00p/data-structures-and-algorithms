@@ -3,7 +3,7 @@ package games.poker;
 
 import java.lang.reflect.Field;
 
-class Card implements Comparable<Card> {
+final class Card implements Comparable<Card> {
 
 	private final Suit suit;
 	private final Rank rank;

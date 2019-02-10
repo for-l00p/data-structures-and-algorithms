@@ -17,10 +17,10 @@ Hand is an abstraction of a set of 7 cards, such that they can be compared (Here
 The Hand Class maps the set-of-7 cards to a {best-of-5-hand, HandRank}, where HandRank is the property of best-of-5-hand such as Flush, Straight etc. The best-of-5-hand are sorted based on Card-Rank (highest first). To compare, the HandRank is first compared. If two sets-of-7 have the same HandRank, then their best-of-5-hands are compared on Card.Rank, starting from the left. 
 
 */
-class Hand implements Comparable<Hand> {
+final class Hand implements Comparable<Hand> {
 
-	private HandRank rank;
-	private List<Card> bestOfFive = new ArrayList<>();
+	private final HandRank rank;
+	private final List<Card> bestOfFive = new ArrayList<>();
 
 	public Hand(List<Card> inputCards){
 		this.rank = evaluateRank(inputCards);
@@ -50,7 +50,7 @@ class Hand implements Comparable<Hand> {
 		return cmp;
 	}
 
-	public HandRank evaluateRank (List<Card> cards){
+	private HandRank evaluateRank (List<Card> cards){
 		if (scanForStraightFlush(cards)){
 			return HandRank.STRAIGHT_FLUSH;
 		} else if (scanForQuads(cards)){
@@ -123,7 +123,7 @@ class Hand implements Comparable<Hand> {
 		return freqMap;
 	}
 
-	public List<Card> extractHighestStraight(List<Card> cards){
+	private List<Card> extractHighestStraight(List<Card> cards){
 		List<Card> result = new ArrayList<>();
 		List<Card> tempList = new ArrayList<>(cards);
 		Collections.sort(tempList);
@@ -159,7 +159,7 @@ class Hand implements Comparable<Hand> {
 		return null;
 	}
 
-	public boolean scanForStraightFlush (List<Card> cards){
+	private boolean scanForStraightFlush (List<Card> cards){
 		Map<Suit, List<Card>> suitFreqMap = getSuitCardMap(cards);
 			//TreeSet<Card> bestOfFiveFlush = new TreeSet<>()
 		for (List<Card> cardsOfSameSuit: suitFreqMap.values()){
@@ -167,7 +167,7 @@ class Hand implements Comparable<Hand> {
 				List<Card> straightFlushCards = extractHighestStraight(cardsOfSameSuit);
 				if(straightFlushCards != null){
 					this.bestOfFive.addAll(straightFlushCards);
-					this.rank = HandRank.STRAIGHT_FLUSH;
+					//this.rank = HandRank.STRAIGHT_FLUSH;
 					return true;
 				} 		
 			}
@@ -177,7 +177,7 @@ class Hand implements Comparable<Hand> {
 
 
 
-	public boolean scanForQuads (List<Card> cards) {
+	private boolean scanForQuads (List<Card> cards) {
 		this.bestOfFive.clear();
 		Map<Rank, List<Card>> rankCardMap = getRankCardMap(cards);
 		for (List<Card> cardsOfSameRank: rankCardMap.values()){
@@ -196,7 +196,7 @@ class Hand implements Comparable<Hand> {
 	}
 
 
-	public boolean scanForFullHouse (List<Card> cards){
+	private boolean scanForFullHouse (List<Card> cards){
 		this.bestOfFive.clear();
 		List<Card> temp = new ArrayList<>(cards);
 		Collections.sort(temp);
@@ -224,7 +224,7 @@ class Hand implements Comparable<Hand> {
 		return false;
 	}
 
-	public boolean scanForFlush (List<Card> cards){
+	private boolean scanForFlush (List<Card> cards){
 		this.bestOfFive.clear();
 		Map<Suit, List<Card>> suitFreqMap = getSuitCardMap(cards);
 		for (List<Card> cardsOfSameSuit: suitFreqMap.values()){
@@ -240,7 +240,7 @@ class Hand implements Comparable<Hand> {
 		return false;
 	}
 
-	public boolean scanForStraight (List<Card> cards){
+	private boolean scanForStraight (List<Card> cards){
 			this.bestOfFive.clear();
 			List<Card> temp = extractHighestStraight(cards);
 			if (temp == null){
@@ -254,7 +254,7 @@ class Hand implements Comparable<Hand> {
 	}
 
 		//guaranteed to have only one trips: otherwise fullHouse should catch it.
-	public boolean scanForTrips (List<Card> cards){
+	private boolean scanForTrips (List<Card> cards){
 			this.bestOfFive.clear();
 			List<Card> temp = new ArrayList<>(cards);
 			Collections.sort(temp);
@@ -275,7 +275,7 @@ class Hand implements Comparable<Hand> {
 			
 	}
 
-	public boolean scanForTwoPair (List<Card> cards){
+	private boolean scanForTwoPair (List<Card> cards){
 			this.bestOfFive.clear();
 			List<Card> temp = new ArrayList<>(cards);
 			Collections.sort(temp);
@@ -298,7 +298,7 @@ class Hand implements Comparable<Hand> {
 			
 	}
 
-	public boolean scanForPair(List<Card> cards){
+	private boolean scanForPair(List<Card> cards){
 			this.bestOfFive.clear();
 			List<Card> temp = new ArrayList<>(cards);
 			Collections.sort(temp);
@@ -320,7 +320,7 @@ class Hand implements Comparable<Hand> {
 			return false;
 	}
 
-	public void scanForHighCard (List<Card> cards){
+	private void scanForHighCard (List<Card> cards){
 			List<Card> temp = new ArrayList<>(cards);
 			Collections.sort(temp);
 			Collections.reverse(temp); 

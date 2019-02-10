@@ -3,7 +3,7 @@ package games.poker;
 
 import java.util.List;
 
-class Game {
+final class Game {
 
 		List<Player> players;
 		int smallBlindIndex;
@@ -21,6 +21,10 @@ class Game {
 			this.minimumBet = minimumBet;
 			this.smallBlindIndex = smallBlindIndex;
 		}
+
+
+
+
 
 		//One rule-of-thumb: ask yourself "does it make sense to call this method, even if no Obj has been constructed yet?" If so, it should definitely be static.
 		public void runRound(){

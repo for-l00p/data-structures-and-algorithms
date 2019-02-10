@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 
-class Deck {
+final class Deck {
 		//deque is an implementation of stack. it extends vector.
 	private List<Card> cards;
 

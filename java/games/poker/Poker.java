@@ -7,7 +7,7 @@ package games.poker;
 **/
 import java.util.List;
 
-class Poker {
+final class Poker {
 
 	public Poker (int numPlayers, int numRounds){
 		List<Player> players = GameEngine.initPlayers(numPlayers);
