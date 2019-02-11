@@ -50,27 +50,43 @@ final class Hand implements Comparable<Hand> {
 		return cmp;
 	}
 
+	// Early exit pattern: https://www.quora.com/What-s-the-coolest-coding-pattern-you-ve-seen/answer/James-Liu-20?ch=10&share=2f4c64d2&srid=3HW0
+
 	private HandRank evaluateRank (List<Card> cards){
 		if (scanForStraightFlush(cards)){
 			return HandRank.STRAIGHT_FLUSH;
-		} else if (scanForQuads(cards)){
+		} 
+
+		if (scanForQuads(cards)){
 			return HandRank.FOUR_OF_A_KIND;
-		} else if (scanForFullHouse(cards)){
+		} 
+		if (scanForFullHouse(cards)){
 			return HandRank.FULL_HOUSE;
-		} else if (scanForFlush(cards)){
+		} 
+
+		if (scanForFlush(cards)){
 			return HandRank.FLUSH;
-		} else if (scanForStraight(cards)){
+		} 
+
+		if (scanForStraight(cards)){
 			return HandRank.STRAIGHT;
-		} else if (scanForTrips(cards)){
+		} 
+
+		if (scanForTrips(cards)){
 			return HandRank.THREE_OF_A_KIND;
-		} else if (scanForTwoPair(cards)){
+		} 
+
+		if (scanForTwoPair(cards)){
 			return HandRank.TWO_PAIR;
-		} else if (scanForPair(cards)){
+		} 
+
+		if (scanForPair(cards)){
 			return HandRank.PAIR;
-		} else {
-			scanForHighCard(cards);
-			return HandRank.HIGH_CARD;
-		}
+		} 
+		
+		scanForHighCard(cards);
+		return HandRank.HIGH_CARD;
+		
 	}
 
 

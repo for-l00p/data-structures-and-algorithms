@@ -45,7 +45,7 @@ public class TicTacToe {
 	}
 
 	enum GameState {
-			GAME_IN_PROGRESS, NOUGHT_WIN, CROSS_WIN, DRAW
+		GAME_IN_PROGRESS, NOUGHT_WIN, CROSS_WIN, DRAW
 	}
 
 	 private static class GameEngine {

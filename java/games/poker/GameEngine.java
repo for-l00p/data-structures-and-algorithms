@@ -64,7 +64,7 @@ final class GameEngine {
 			int smallBlindIndex = game.smallBlindIndex;
 			for (int i = 0;  i  < n;  i++){
 				Player nextPlayer = players.get((smallBlindIndex + i) %n);
-				Card nextCard = game.currentDeck.dealCard();
+				Card nextCard = game.currentDeck.drawCard();
 				nextPlayer.addHoleCard(nextCard);
 				
 			}
@@ -233,7 +233,7 @@ final class GameEngine {
 
 	public static void openCards(Round game, int num){
 			for (int i = 1; i <= num; i++){
-				Card nextCard = game.currentDeck.dealCard();
+				Card nextCard = game.currentDeck.drawCard();
 				game.openCards.add(nextCard);
 				System.out.println("Next card to be opened is:" + nextCard.toString());
 			}
@@ -254,6 +254,7 @@ final class GameEngine {
 			List<Card> playerCards = new ArrayList<Card>();
 			playerCards.addAll(player.getHoleCards());
 			playerCards.addAll(game.openCards);
+
 			Hand playerHand = new Hand(playerCards);
 					//System.out.println("HAND: " + playerHand.toString());
 				if (playerHand.compareTo(tempbest) > 0){

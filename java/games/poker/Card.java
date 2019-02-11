@@ -1,8 +1,29 @@
 
 package games.poker;
 
-import java.lang.reflect.Field;
 
+/**
+ 
+The parent Card class should be rather empty, and allow for subclasses to specify the criteria of that card. Like ordinary playing cards, or a Uno deck, or Pokemon deck, and so on.
+
+A Player can use a card, but doesn't need to have a card; So a Player should be in a different package. This is important for permission levels, as you might want to make the card Set methods Protected. Moving Players to a new package would give Deck permission to re-write cards, but not players.
+
+Make the Card class immutable - the state of a card object ought not to be modifiable after it is created.
+Why? 
+
+
+
+
+interface Suitable<T> {
+    booleanIsSameSuit(T other);
+}
+interface Rankable<T> {
+booleanIsConsecutive(T other);
+
+FrenchPlayingCard extends Card implements Suitable<Card>, Rankable<Card>, Comparable<FrenchPlayingCard>
+
+}
+ */
 final class Card implements Comparable<Card> {
 
 	private final Suit suit;
@@ -27,34 +48,11 @@ final class Card implements Comparable<Card> {
 		return rank.compareTo(c.rank);
 	}
 
-	@Override
-	public String toString() {
-  		StringBuilder result = new StringBuilder();
-  		String newLine = System.getProperty("line.separator");
 
-  		result.append( this.getClass().getName() );
-  		result.append( " Object {" );
-  		result.append(newLine);
+  @Override
+  public String toString(){
+      return "Card {"  + this.rank + " of "  + this.suit + "}";
+  }
 
-  			//determine fields declared in this class only (no fields of superclass)
-  		Field[] fields = this.getClass().getDeclaredFields();
-
-  			//print field names paired with their values
-  		for ( Field field : fields  ) {
-    		result.append("  ");
-    		try {
-      		result.append( field.getName() );
-      		result.append(": ");
-      		//requires access to private field:
-      		result.append( field.get(this) );
-    		} catch ( IllegalAccessException ex ) {
-      		System.out.println(ex);
-    		}
-    		result.append(newLine);
-  		}
-  		result.append("}");
-
-  		return result.toString();
-	}
 
 }

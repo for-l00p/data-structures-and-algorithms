@@ -3,6 +3,7 @@ package games.poker;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 final class Player {
 
@@ -43,7 +44,7 @@ final class Player {
 	}
 
 	public List<Card> getHoleCards(){
-		return this.holeCards;
+		return Collections.unmodifiableList(this.holeCards); //The unmodifiableList() method is used to returns an unmodifiable view of the specified list.
 	}
 
 	public void resetHoleCards(){

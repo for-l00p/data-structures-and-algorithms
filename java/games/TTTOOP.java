@@ -2,7 +2,7 @@ import java.util.*;
 
 
 
-public class TicTacToe{
+public class TicTacToe {
 
 	// Use a non-static nested class (or inner class) if you require access to an enclosing instance's non-public fields and methods. Use a static nested class if you don't require this access.
 
