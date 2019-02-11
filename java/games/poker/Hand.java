@@ -14,7 +14,7 @@ import java.util.ListIterator;
 
 Hand is an abstraction of a set of 7 cards, such that they can be compared (Here the comparison is based on Poker hand hierarchy, but we can conceivably change this). 
 
-The Hand Class maps the set-of-7 cards to a {best-of-5-hand, HandRank}, where HandRank is the property of best-of-5-hand such as Flush, Straight etc. The best-of-5-hand are sorted based on Card-Rank (highest first). To compare, the HandRank is first compared. If two sets-of-7 have the same HandRank, then their best-of-5-hands are compared on Card.Rank, starting from the left. 
+The Hand Class maps the set-of-7 cards to a {best-of-5-hand, HandRank}, where HandRank is the property of best-of-5-hand such as Flush, Straight etc. The best-of-5-hand are sorted based on Card-Rank (highest first). To compare, the HandRank is first compared. If two sets-of-7 have the same HandRank, then their best-of-5-hands are compared on Card.Rank, starting from the left (highest handrank first). 
 
 */
 final class Hand implements Comparable<Hand> {

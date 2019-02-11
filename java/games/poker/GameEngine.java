@@ -12,31 +12,6 @@ final class GameEngine {
 		throw new AssertionError("This class is not meant to be instantiated.");
 	}
 
-	public static List<Player> initPlayers(int numPlayers){
-		List<Player> players = new ArrayList<>();
-		Scanner in = new Scanner(System.in);
-		int count = 1;
-		do {
-			System.out.println("Player " + count + ", please enter your name:");
-			String playerName = in.nextLine();
-			System.out.println(playerName + ", please enter your buyin:");
-			int playerBuyin = in.nextInt();
-			in.nextLine();
-			players.add(new Player(playerName, playerBuyin));
-			count++;
-		} while (count <= numPlayers);
-		return players; 
-	}
-
-	public static int askForMinimumBet(){
-		Scanner in = new Scanner(System.in);
-		System.out.println("Please enter minimum bet:");
-		int minimumBet = in.nextInt();
-		return minimumBet;
-	}
-
-	
-
 	public static void setPlayerStatus(Round game){
 			List<Player> players = game.players;
 			int n = players.size();

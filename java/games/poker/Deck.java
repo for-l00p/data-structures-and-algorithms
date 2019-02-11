@@ -8,24 +8,18 @@ import java.util.NoSuchElementException;
 
 /**
 
-The Deck consists of Cards, but other than basic handling of cards, it shouldn't know too much about the cards. And it shouldn't really know anything about a Player or a Game using the Deck.
+The Deck consists of Cards, but other than basic handling of cards, it shouldn't know too much about the cards. And it should definitely not know know anything about a Player or a Game using the Deck.
 
-For example, a deck should be able to dealCard(). But this should only remove a Card from the deck, and return it to whomever who might use it as they please. It shouldn't know anything about the player to whom the card might eventually go. (Better to rename it as drawCard()).
+- Would a Deck need to know about Rank/Suit classes? If it does, we would not be able to use the Deck Class for UnoCards, Pokermon Cards etc. If it doesn't, who will handle the initialization the cards for the Deck then? 
 
-A Deck would need to know about the Card class. 
-
-Would a Deck need to know about Rank/Suit classes? If it does, we would not be able to use the Deck Class for UnoCards, Pokermon Cards etc.
-
-
-And should constructing cards be part of deck's respomsbility? 
-
-It might be be better if the Deck constructor did not instantiate the Cards, but rather accept Cards (dependency injection):
+- Should constructing cards be part of deck's respomsbility? 
+It might be be better if the Deck constructor did not instantiate the Cards, but rather accept Cards.
 
 public Deck(final List<Card> cards) {
     this.cardDeck = cards;
 }
 
-Who will construct the  initialize the cards for Deck then? The client!
+
 
 **/
 
