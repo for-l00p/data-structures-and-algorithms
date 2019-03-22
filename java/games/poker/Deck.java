@@ -27,14 +27,8 @@ final class Deck {
 
 	private List<Card> cards;
 
-	public Deck(){
-		cards = new ArrayList<Card>();
-		for (Suit s: Suit.values()){
-			for (Rank r: Rank.values()){
-				Card card = new Card(s, r);
-				cards.add(card);
-			}
-		}
+	public Deck(List<Card> cards){
+		this.cards = cards;
 	}
 
 	public Card drawCard() throws NoSuchElementException {

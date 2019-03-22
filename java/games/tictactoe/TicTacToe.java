@@ -2,7 +2,7 @@
 
 package games.tictactoe;
 
-import java.util.*;
+import java.util.Scanner;
 
 
 

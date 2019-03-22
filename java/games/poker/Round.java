@@ -25,7 +25,7 @@ final class Round {
 		//Setting state to start of a round.
 		this.pot = 0;
 		this.openCards = new ArrayList<Card>();
-		this.currentDeck = new Deck();
+		this.currentDeck = new PokerDeckBuilder().buildDeck();
 		this.currentDeck.shuffle();
 		this.currentTurnIndex = this.smallBlindIndex;
 		this.currentMaxBet = this.minimumBet;

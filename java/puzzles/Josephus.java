@@ -5,9 +5,9 @@ Can be solved by recursion for k = 2, and by dynamic programming in the general 
 
  */
 
-public class Josephus{
+public class Josephus {
 
-	private static class Gunman{
+	private static class Gunman {
 
 		private int number;
 		Gunman next;

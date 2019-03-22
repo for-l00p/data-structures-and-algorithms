@@ -6,10 +6,39 @@ Dependencies:
 Data files: 
 
 
-/** A Binary Search Tree (BST) implements the abstract data structure of ordered dictionary (also called associative array or symbol table) of generic key-value pairs.  
+/*
+
+A tree is an ADT used to represent hierarchy.
+
+Examples: 
+- the organizational structure of an organisation 
+- table of contents of a book. Reading the table of contents of the book: pre-order traversal.
+- Unix FileSystem.  Calculating the total size of directories: post-order traversal.  (du command in unix) 
+- heirarchical data representations (e.g. XML, JSON)
+- DOM
+- Parse tree: Parsing a string against a grammar 
+
+
+Binary trees have atmost two children. Examples: 
+- Arithemetic expressions can be represented as a binary tree (numbers corresponding to leaves and binary operations corresponding to internal nodes). Priinting an arithmeic expression: in order traversal. Calculating values of arithmetic expressions post-order traversal
+- Yes/no decision trees
+
+
+Mathematical truths about trees:
+
+- A binary tree of height h has atmost 2^(h+1)-1 nodes. so it has atleast  log2(n+1/2) height and atmost n-1. 
+- The number of leaves <= 1+ no. of internal nodes. so number of leaves <= (n+1)/2. 
+- The number of leaves in a complete tree (as in a binary heap, as opposed to perfect tree) is celing(n/2).
+
+Problem solving tips
+- Look at common ancestors of two nodes. They are in-between the two nodes.
+- Use recursive techniques. Define recursive methods. Prove by mathematical induction.  Prove recursive equations by substitution.
+
+
+A Binary Search Tree (BST) implements the abstract data structure of ordered dictionary (also called associative array or symbol table) of generic key-value pairs.  
 
 It supports the operations(methods):  
-- insert/put, search/get/contains, delete  (Generic dictionary methods. Time Complexity: O(h). O(n) worst case if the tree is unbalanced)
+- insert/put/add, search/get/contains, delete  (Generic dictionary methods. Time Complexity: O(h). O(n) worst case if the tree is unbalanced)
 - successor, predecessor, minimum and maximum (Special methods related to ordering. Time Complexity: O(h), O(n) worst case if the tree is unbalanced)
 - size, isEmpty (Container methods. Time complexity O(1): if size field is maintained)
 - iterator (returns iterator for iterating over the keys)
@@ -17,7 +46,6 @@ It supports the operations(methods):
 Still to implement: rank, size and select methods.
 
 Convention: (Unlike the {@link java.util.Map} implementation) Values cannot be null. Setting the Value corresponding to a key to null is equivalent to deleting the key. 
-
 
 This class requires that the Key type implements the Comparable interface and calls the compareTo() method to compare two keys. It does not call the methods equal() or hashCode() (as is the case in hash table implementation of dictionaries to compare two keys). 
 
@@ -33,28 +61,38 @@ Questions one can ask to the interviewer:
 - Recursive implementation of methods or iterative?
 
 
-
 @author Piyush Ahuja
-**/
 
-// package name:
-
-
-import java.util.*; 
-
-public class BST<Key extends Comparable<Key>, Value>{
+*/
 
 
+package ds;
+
+import java.util.Stack; 
+import java.util.LinkedList;
+import java.util.Queue;
+
+
+
+
+public class BST<Key extends Comparable<Key>, Value> {
+
+	// Tree = (root:Node)
+	// Node = Empty + Node(key: Key, left: Node, right: Node)
+	// Abstaraction Functon:
+	// Rep Invariant:
+	// Argument Against Rep Exposure: 
+	// 
 	private TreeNode root; 
 
+	private class TreeNode {
 
-	private class TreeNode{
-
+		// Storing a pointer to parent, or the size of the subtree rooted at the tree makes certain functions simpler to write and more efficient and others harder to write. For example, with parent pointers, delete has to be modifed to ensure that everytime a node is deleted its children have the correct pointer, its children have If finding the size of the subtree or gong to an ancestor (as in iterative tree traversals) is a common operaton, store them. 
+		 
 		private Key key;   
-		private Value value;  //satellite data
-		private TreeNode parent, leftChild, rightChild; //One can do without storing a pointer to parent, but it makes certain functions simpler to write. 
-
-		// private int size;
+		private Value value; 
+		private TreeNode parent, leftChild, rightChild; 
+		//private int size; 
 
  /** Constructor for the node **/
 
@@ -62,14 +100,30 @@ public class BST<Key extends Comparable<Key>, Value>{
 			System.out.println("Creating new node with key: " + key + " and value: " + value);
 			this.key = key;
 			this.value = value;
-		// this.size = size;
+			
+		}
+
+		private int size(){
+			return size(this);
+		}
+
+		private int size(TreeNode node){
+
+			if (node == null){
+				return 0;
+ 			} 
+ 			// Lazy evaluation
+ 			
+ 			return  1 + size(node.leftChild) + size(node.rightChild);
+
 		}
 
 	}
 
+
 /**
- * Initializes an empty Binary Search Tree
-**/ 
+* Initializes an empty Binary Search Tree
+*/ 
 
 	public BST(){
 
@@ -79,6 +133,14 @@ public class BST<Key extends Comparable<Key>, Value>{
 
 	private boolean isEmpty(){
 		return this.root == null;
+	}
+
+	public int size(){
+		if (isEmpty()){
+			return 0;
+		} else {
+			return root.size();
+		}
 	}
 
 
@@ -97,7 +159,7 @@ public class BST<Key extends Comparable<Key>, Value>{
  * @throws IllegalArgumentException
  */
 
-	public void insert(Key key, Value value){
+	public void insert (Key key, Value value){
 
 		if (key == null) throw new IllegalArgumentException("calls insert() with a null key");
 		if (value == null){
@@ -105,12 +167,12 @@ public class BST<Key extends Comparable<Key>, Value>{
 			return;
 		}
 		TreeNode newNode = new TreeNode(key, value);
-		insertIterative(this.root, newNode);
-		//this.root = insertRecursive(this.root, newNode);
+		//insertIterative(this.root, newNode);
+		this.root = insertRecursive(this.root, newNode);
 
 	}
 
-	private void insertIterative(TreeNode rootNode, TreeNode newNode){
+	private void insertIterative (TreeNode rootNode, TreeNode newNode){
 		if (rootNode == null){
 			//assert rootNode != null
 			System.out.println("Called insert helper on empty subtree.");
@@ -148,17 +210,23 @@ public class BST<Key extends Comparable<Key>, Value>{
 
 	}
 
-// returntype is needed for recursive methods because we need to know where to insert: as a leftChild or a rightChild of the parent. We are not sending parent pointers as parameters to a recursive call, so the function must return something so the additinal work can be done. 
+// returntype is needed for recursive methods because we need to know where to insert: as a leftChild or a rightChild of the parent. We are not sending parent pointers as parameters to a recursive call, so the function must return something so the additinal post-recursion work can be done. If we were to send parentNode's in the recursive call, then we could avoid a return type.
+
 	private TreeNode insertRecursive(TreeNode rootNode, TreeNode newNode){
 
 		if (rootNode == null){
-			rootNode = newNode;
+			return newNode;
 		} else {
 			int cmp = newNode.key.compareTo(rootNode.key);
 			if (cmp < 0){
-				rootNode = insertRecursive(rootNode.leftChild, newNode);
+				 TreeNode leftChild = insertRecursive(rootNode.leftChild, newNode);
+				rootNode.leftChild = leftChild;
+				leftChild.parent = rootNode;
+
 			} else if (cmp > 0){
-				rootNode = insertRecursive(rootNode.rightChild, newNode);
+				TreeNode rightChild = insertRecursive(rootNode.rightChild, newNode);
+				rootNode.rightChild = rightChild;
+				rightChild.parent = rootNode;
 			} else {
 				rootNode.value = newNode.value;
 			}	
@@ -267,7 +335,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 /**
  * oneChildToParent() is a helper method employed the delete() case where the node to be deleted has atmost one child. in this case, we simply remove the node, and connect the child directly with the parent.  
  *
- * If first stores the pointer to the child node (possibly null) in nodeToMove.
+ * It first stores the pointer to the child node (possibly null) in nodeToMove.
  * Two pointers need to be replaced in the normal case (one in the parent and one in the child), and only one in the special case of a root or leaf being deleted. If the root is the leaf, then no pointer change is needed. 
  * 
  *
@@ -321,7 +389,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 
   /*************************************************************************
       Search and Get
-   ***************************************************************************/
+   **********************************************************************/
 
 
 /**
@@ -485,6 +553,8 @@ public class BST<Key extends Comparable<Key>, Value>{
 		}
 	}
 
+	// could rewrite this with accumulator pattern.
+
 	private TreeNode predecessorRecursive(TreeNode rootNode, Key key){
 
 		TreeNode result = null;
@@ -497,7 +567,7 @@ public class BST<Key extends Comparable<Key>, Value>{
  		}
  		if (cmp > 0){
  		// max(rootNode.key, predecessorRecursive)
- 			TreeNode probeRight = predecessorRecursive(rootNode.rightChild,key);
+ 			TreeNode probeRight = predecessorRecursive(rootNode.rightChild, key);
  			if (probeRight != null){
  				result = probeRight; //anything not null would be bigger than root
  			} else {
@@ -535,6 +605,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 		if (rootNode == null){
 			throw new IllegalArgumentException("called max() with null");
 		}
+
 		while(rootNode.rightChild != null){
 			rootNode = rootNode.rightChild;
 		}
@@ -543,17 +614,14 @@ public class BST<Key extends Comparable<Key>, Value>{
 	}
 
 
-
-  /*************************************************************************
+/************************************************************************
       Iterators and Traversals 
-   ***************************************************************************/
-
-
+**********************************************************************/
 
 
 /**
- * returns the keys in their inOrdertraversal
- * @return [description]
+ * These traversals are basically DFS implementations, but we don't need a "visited" set thanks to trees being acyclic.
+ * 
  */
     public Iterable<Key> keys(){
 
@@ -589,37 +657,94 @@ public class BST<Key extends Comparable<Key>, Value>{
  			if(currentNode.rightChild != null){
  				queue.add(currentNode.rightChild);
  			}
-
  		}
  	}
-    	
 
-/**
- * PreOrder lends itself to a simple, readable code with a stack. 
- * @param callback [description]
- */
+/***********************************************************************
+	TRAVERSALS USING PARENT POINTERS 
+************************************************************************/
+ 	
+ /*
 
-     private void preOrderTraversal(Processable<TreeNode> callback){
 
-     		Stack<TreeNode> nodeStack = new Stack<>();
-     		TreeNode currentNode = this.root;
-     		nodeStack.push(currentNode);
-     		while(!nodeStack.isEmpty()){
-     			currentNode = nodeStack.pop();
-     			callback.process(currentNode);
+On iterative algorithms:
+Each iterative algorithm runs a loop. A state of the system is the input.  Here we can keep a pointer to the node that is visited to store the state of the system. But that is not sufficient; we also need some way of knowing which visit it is when we visit a node to find out what to do with it in the loop (process or proceed to proceed to some other node). 
 
-     			if(currentNode.rightChild != null){
-     				nodeStack.push(currentNode.rightChild);
+Simulate the first few steps of the algorithm and see a pattern. Look how the nodes being printed jump around.
+
+https://stackoverflow.com/questions/38724489/intuitive-explanation-of-binary-tree-traversals-without-recursion/54669879#54669879
+
+*/
+
+
+
+
+ 	private void traversal(Processable<TreeNode> callback, String typeOfTraversal){
+
+     	boolean visitedLeft = false;
+     	boolean visitedRight = false;
+     	TreeNode currentNode = this.root;
+
+     	while(true){
+
+     		if (visitedLeft == false && currentNode.leftChild != null){
+     			if(typeOfTraversal == "preOrder"){
+     				callback.process(currentNode);
      			}
-
-     			if (currentNode.leftChild != null){
-     				nodeStack.push(currentNode.leftChild);
-     			}
+     			currentNode = currentNode.leftChild;
+     			continue;
      		}
-     }
+
+     		if (visitedLeft == false && currentNode.leftChild == null){
+     			if(typeOfTraversal == "preOrder"){
+     				callback.process(currentNode);
+     			}
+     			visitedLeft = true;
+     			continue;
+     		}
+
+     		if (visitedLeft == true && visitedRight == false && currentNode.rightChild != null){
+     			if(typeOfTraversal == "inOrder"){
+     				callback.process(currentNode);
+     			}
+     			currentNode = currentNode.rightChild;
+     			visitedLeft = false;
+     			continue;
+     		}
+
+     		if (visitedLeft == true && visitedRight == false && currentNode.rightChild == null){
+
+     			if(typeOfTraversal == "inOrder"){
+     				callback.process(currentNode);
+     			}
+     			visitedRight = true;
+     			continue;
+     		}
+
+     		if (visitedLeft == true && visitedRight == true && currentNode.parent != null){
+     			if(typeOfTraversal == "postOrder"){
+     				callback.process(currentNode);
+     			}
+     			if (currentNode == currentNode.parent.leftChild){
+     				visitedRight = false;
+ 				}
+ 				currentNode = currentNode.parent;
+     		}
+
+     		if (visitedLeft == true && visitedRight == true && currentNode.parent == null){
+     			if(typeOfTraversal == "postOrder"){
+     				callback.process(currentNode);
+     			}
+     			break;
+     		}
+ 		}
+	}
+    
+
 /**
-* Can we implement preOrder without a Stack? Yes. Here we use two flags. (Note the similarity to inOrderTraversal and postOrderTarversal where each loop finds a successor. Here each loop processes the left subtree, and then switches control to the root of the next node for whom the left subtree is unvisited. For finding such a node, we either go to first ancestor who has a rightChild). Questions: Do we need two flags? Can you prove correctness? 
-* @param callback [description]
+
+Depending on what we see as a "step" - as traversing a mere node or traversing a whole left branch, the code in our loop changes. Here each loop processes the left subtree, and then switches control to the root of the next node for whom the left subtree is unvisited. For finding such a node, we go to first ancestor who has a rightChild). This requires parent pointers. 
+
 */
 
      private void preOrderTraversalWithoutStack(Processable<TreeNode> callback){
@@ -629,7 +754,7 @@ public class BST<Key extends Comparable<Key>, Value>{
      	TreeNode currentNode = this.root;
 
      	while(currentNode != null){
-
+     		
      		if(visitedLeft == false && visitedRight == false){
      			callback.process(currentNode);
      			while(currentNode.leftChild != null){
@@ -640,8 +765,7 @@ public class BST<Key extends Comparable<Key>, Value>{
      		}
 
      		if (visitedLeft == true && visitedRight == false){
-
-     			if(currentNode.rightChild != null){
+     		     if(currentNode.rightChild != null){
      				currentNode = currentNode.rightChild;
      				visitedLeft = false;
      			} else {
@@ -658,77 +782,29 @@ public class BST<Key extends Comparable<Key>, Value>{
      			currentNode = parent;
 
      		}
-
      	}
-
-
      }
 
-/**
- * General Thoughts on inOrderTraversal: 
- *
- * Simulate the first few steps of the algorithm and see a pattern. Look how the nodes being printed jump around.
- *
- *
- * During the traversal,  each node is visited twice: the first time, then after the left child is visited. It is processed during the second visit. 
- * 
- * Each iterative algorithm runs a loop. A state of the system is the input.  Here we can keep a pointer to the node that is visited to store the state of the system. But that is not sufficient; we also need some way of knowing which visit it is when we visit a node to find out what to do with it in the loop (process or proceed to proceed to some other node). 
- * 
- 
- *   Could we find out which visit it is by the relation of "the node we are visiting from" to "the node we are visiting to." No: Even if it can be done, this wouldnt be an elegant, Because a node might want to "jump" to a remote ancestor in the traversal whose relation to the current node might be difficult to ascertain. 
- *
- * 
- * The structure of the sequence of operations (store, access or retrieve) we perform on the nodes is similar to the abstract mathematical structure of a Stack. For example, when we first visit a node, we need to store its flags (push it to the stack), when we visit it again, we access the node, see its flags, modify them, and store them again (peek/push). When we finally visit it, we don't visit it again (pop it from the stack). 
- * 
-
- *
- * If we don't have parent pointers, then we need to have some way to backtrack to the node we need to visit next (which might not be the parent. It's the successor). We do this with a stack. 
- *
- * For the iterative algorithms, we decide the terminal conditions of the loop: the loop ends when the tree is traversed.
- * 
- *
- *Resources: http://plasmasturm.org/log/453/
- *
- *
- **/
-
-
-     private void inOrderTraversal(Processable<TreeNode> callback){
-
-     	Stack<TreeNode> nodeStack = new Stack<>();//The stack stores nodes to be visited again.
-     	TreeNode currentNode = this.root; // This variable stores a node visited for the first time. 
-
-     	while(!nodeStack.isEmpty() || currentNode !=null){
-     		// If there is still work to be done
-     		if(currentNode !=null){
-     			nodeStack.push(currentNode);
-     			currentNode = currentNode.leftChild;
-     		} else {
-     			currentNode = nodeStack.pop();
-     			callback.process(currentNode);
-     			currentNode = currentNode.rightChild;
-     		}
-
-     	}
- 	}
 
 
 /*
- * 
- * Pattern: After processing(i), we always process successor(i). We start with the minimum element and end with the maximum element. successor(i) takes log(n) time in the worst case. So this algorithm should run in O(nlogn).  Can we reduce it? Yes, to O(n):
- *
- *  We need to have some way to backtrack to successor in case the successor is an ancestor. This will be easier/faster with parent pointers - otherwise we might need to start from the root - and each node might be visited more than thrice.  Parent pointers would take an O(n) space. With parent pointers, each node is visited atmost thrice. So running time becomes O(n). 
- *  
+ 
+ For inOrder,  the whole purpose of using a stack was to save the parent nodes.
+ 
+ Pattern: After processing(i), we always process successor(i). We start with the minimum element and end with the maximum element. successor(i) takes log(n) time in the worst case. So this algorithm should run in O(nlogn).  Can we reduce it? Yes, to O(n):
+
+ We need to have some way to backtrack to successor in case the successor is an ancestor. This will be easier/faster with parent pointers - otherwise we might need to start from the root - and each node might be visited more than thrice.  Parent pointers would take an O(n) space. With parent pointers, each node is visited atmost thrice. So running time becomes O(n). 
+ 
 
  * @return [description]
  */
      public void inOrderTraversalWithoutStack(Processable<TreeNode> callback){
+
      	TreeNode currentNode = this.root;
      	boolean visitedLeft = false;
      	 //After each iteration, currentNode either stores the next element to be processed, or  root of the subtree whose minimum element is next to be printed. The visitedLeft flag tells us which is the case. 
      	while(currentNode != null){
-
-    		if(visitedLeft == false){
+    		if(visitedLeft == false) {
     			currentNode = min(currentNode);	
     		}
     		callback.process(currentNode);
@@ -753,15 +829,119 @@ public class BST<Key extends Comparable<Key>, Value>{
 
      }
 
-/**
-* Alternatively, we can use a stack. This speeds up the running time to O(n) at the expense of O(logn) memory, since we do not need to do the O(logn) work to find the successor. 
-* 
-* As we said, we need some way of knowing which visit it is when we visit a node to find out what to do with it in the loop. Here we store nodes for whom a second visit is due in a stack, and the pointer to the node visited for the first time in separate variable. If we pop from the stack to assign to the pointer, it is a second visit; else it is not. 
- *
- * @param  callback [description]
- * @return          [description]
+/***********************************************************************
+	TRAVERSALS USING THREADED TREES 
+************************************************************************/
+ 	
+
+
+
+
+
+/***********************************************************************
+      TRAVERSALS USING STACK
+************************************************************************/
+ 
+ /** 
+
+
+Stacks are useful data structures when thinking of converting a recursive solution to an iterative one, or for coming up with an iterative solution to a problem defined recursively. A call stack, a stack data structure that stores information about the active subroutines of a computer program, is how most high-level programming languages implement recursion below-the-hood. So we can implement any program using a loop and a call stack. Using a stack explicitly in an iterative solution, we'd just be mimicking what the processor does when we write recursive code. 
+
+If we don't have parent pointers, then we need to have some way to backtrack to the node we need to visit next (which might not be the parent. It's the successor). We do this with a stack. 
+
+The stack is used to store the work you can't do right away, and to dirctly switch control to the work when it has to be done. 
+
+The structure of the sequence of operations (store, access or retrieve) we perform on the nodes is similar to the abstract mathematical structure of a Stack. For example, when we first visit a node, we need to store its flags (push it to the stack), when we visit it again, we access the node, see its flags, modify them, and store them again (peek/push). When we finally visit it, we don't visit it again (pop it from the stack). 
+ 
+The preorder case is easiest, because there's only one kind work you have to defer, processing a child node.The stack has to store nodes  nodes to process later, but node to process later are just the children of of a node just visited/processed. 	
+
+
+ * @param callback [description]
  */
 
+     private void preOrderTraversal(Processable<TreeNode> callback){
+
+     		Stack<TreeNode> nodeStack = new Stack<>();
+     		TreeNode currentNode = this.root;
+     		nodeStack.push(currentNode);
+     		while(!nodeStack.isEmpty()){
+     			currentNode = nodeStack.pop();
+     			callback.process(currentNode);
+
+     			if(currentNode.rightChild != null){
+     				nodeStack.push(currentNode.rightChild);
+     			}
+
+     			if (currentNode.leftChild != null){
+     				nodeStack.push(currentNode.leftChild);
+     			}
+     		}
+     }
+
+//The stack is used to push the work to be done later, and we are pushing the right and left children. But we don't need to push the left, as we know we need to visit it next, so we can point the next node to visit directly to it.
+
+
+
+    private void preOrderTraversal2(Processable<TreeNode> callback){
+
+     		Stack<TreeNode> nodeStack = new Stack<>();
+     		TreeNode currentNode = this.root;
+     		nodeStack.push(currentNode);
+     		while(!nodeStack.isEmpty()){	
+     			if (currentNode == null){
+     				currentNode = nodeStack.pop();		
+     			} else {
+     				callback.process(currentNode);
+     				if(currentNode.rightChild != null){
+     					nodeStack.push(currentNode.rightChild);
+     				}
+     				currentNode = currentNode.leftChild;	
+     			}
+     		}
+     }
+
+   
+
+/**
+
+General Thoughts on inOrderTraversal: 
+
+During the traversal,  each node is visited twice: the first time, then after the left child is visited. It is processed during the second visit. 
+
+Could we find out which visit it is by the relation of "the node we are visiting from" to "the node we are visiting to." A node might want to "jump" to a remote ancestor in the traversal whose relation to the current node might be difficult to ascertain. 
+ 
+
+For the iterative algorithms, we decide the terminal conditions of the loop: the loop ends when the tree is traversed.
+ 
+Resources: http://plasmasturm.org/log/453/
+ 
+ **/
+
+
+     private void inOrderTraversal(Processable<TreeNode> callback){
+
+     	Stack<TreeNode> nodeStack = new Stack<>();//The stack stores nodes to be visited again.
+     	TreeNode currentNode = this.root; // This variable stores a node visited for the first time. 
+
+     	while(!nodeStack.isEmpty() || currentNode !=null){
+     		// If there is still work to be done
+     		if(currentNode !=null){
+     			nodeStack.push(currentNode);
+     			currentNode = currentNode.leftChild;
+     		} else {
+     			currentNode = nodeStack.pop();
+     			callback.process(currentNode);
+     			currentNode = currentNode.rightChild;
+     		}
+
+     	}
+ 	}
+
+
+/**
+*  This speeds up the running time to O(n) at the expense of O(logn) memory, since we do not need to do the O(logn) work to find the successor. 
+ 
+As we said, we need some way of knowing which visit it is when we visit a node to find out what to do with it in the loop. Here we store nodes for whom a second visit is due in a stack, and the pointer to the node visited for the first time in separate variable. If we pop from the stack to assign to the pointer, it is a second visit; else it is not. 
 
 
 
@@ -801,9 +981,12 @@ public class BST<Key extends Comparable<Key>, Value>{
 
 
 /**
-* Using two stacks. Intuition: The iterative method just uses an explicit stack to do what the recursive method does implicitly. https://stackoverflow.com/questions/49409193/understanding-the-logic-in-iterative-postorder-traversal-implementation-on-a-bin/50611267#50611267
-*
-* Combinatorial Insight: The sequence generated by left-to-right postOrder traversal (LRV) is the same as the 'reverse' of VRL - the sequence generated by right-to-left preOrder traversal. If, during the corse of right-to-left preOrder, instead of printing/processing, we just push the value onto another stack, then this reversing the sequence wil be easier. 
+Using two stacks.  https://stackoverflow.com/questions/49409193/understanding-the-logic-in-iterative-postorder-traversal-implementation-on-a-bin/50611267#50611267
+
+Combinatorial Insight: If you take the mirror of the BST: where every right child is swapped with left chiild, and print iits preOrder, you'd get the reverse of the orignally desiired postOrder.
+The sequence generated by left-to-right postOrder traversal (LRV) is the same as the 'reverse' of VRL - the sequence generated by right-to-left preOrder traversal. So let's generate it and then print it in reverse. 
+How do we print something in reverse? We push it all on a stack (called it PrintStack) and then print it starting from the top. Ok, so
+If, during the course of right-to-left preOrder, instead of printing/processing, we just push the value onto the priintStack, then this reversing the sequence wil be easier. 
 
 * @param callback [description]
 */
@@ -830,12 +1013,18 @@ public class BST<Key extends Comparable<Key>, Value>{
      	}
 
      }
+
+
+      
+
 /**
- * What we do when we encounter a node depends on from where we are approaching it. If we are approaching it from the parent, then we need to push the node, and then its children. If we are approaching it from the left, then we need to push it and its right child (Note that when we use a stack, we only encounter a node from the left when its right child is empty; otherwise we directly backtrack to the right child from the left one). When we traverse it from the right, we process it. 
- * 
- * Here we keep a flag to tell us whether we have already visited the current node are encountering. 
- * Corresponds to inOrderTraversalWithFlag
- * @param callback [description]
+
+What we do when we encounter a node depends on from where we are approaching it. If we are approaching it from the parent, then we need to push the node, and then its children. If we are approaching it from the left, then we need to push it and its right child (Note that when we use a stack, we only encounter a node from the left when its right child is empty; otherwise we directly backtrack to the right child from the left one). When we traverse it from the right, we process it. 
+ 
+Here we keep a flag to tell us whether we have already visited the current node are encountering. 
+
+Corresponds to inOrderTraversalWithFlag
+
  */
 
      private void postOrderTraversalWithFlag(Processable<TreeNode> callback){
@@ -849,9 +1038,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 
      		currentNode = nodeStack.pop();
      			
-
      		if (visitedLeft == false){
-
      			nodeStack.push(currentNode);
      			if(currentNode.leftChild == null && currentNode.rightChild == null){
      				visitedLeft = true;
@@ -896,8 +1083,7 @@ public class BST<Key extends Comparable<Key>, Value>{
      	while(!nodeStack.isEmpty()){
 
      		currentNode = nodeStack.pop();
-     			//System.out.println("Current node now:" + currentNode.key);
-
+     	
      		if (visitedLeft == false){
 
      			if (currentNode.leftChild == null && currentNode.rightChild == null){
@@ -925,7 +1111,6 @@ public class BST<Key extends Comparable<Key>, Value>{
 
      		if (visitedLeft == true){
      			callback.process(currentNode);
-     				
      			if (!nodeStack.isEmpty() && nodeStack.peek() != currentNode.parent){
      					visitedLeft = false;
      				}
@@ -964,7 +1149,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 
      		if (readyToVisit){
      			callback.process(currentNode);
-     			readyToVisit = false;
+     			readyToVisit = false; 
      			previousNode = currentNode;
      		} else {
      				// Case when the previous node is not one of children, but one of parent.
@@ -994,7 +1179,7 @@ public class BST<Key extends Comparable<Key>, Value>{
 
      	while(!nodeStack.isEmpty()){
      		// Non-null currentNode corresponds to an unvisited left subtree. If there is a node on which the recursive call is made, we have a left subtree to explore. 
-     		//If current node == null, this means the leftSubtree is visited, and we must backtrack to teh previous node. we have to investigate the stack to see the next node - if an unvisited right subtree exists. If not, we visit the next node and set the stage for the next investigation of the stack by setting currentNode == null. Can the next node in the stack have an unvisited left subtree? 
+     		//If current node == null, this means the leftSubtree is visited, and we must backtrack to the previous node (the node we came from). we have to investigate the stack to see the next node to visit. If the next node is the right child - an unvisited right subtree exists. If not, then the next must be the parent, we visit it and set the stage for the next investigation of the stack by setting currentNode == null. Can the next node in the stack have an unvisited left subtree? 
      			
      		if (currentNode != null){
      			nodeStack.push(currentNode);
@@ -1012,17 +1197,14 @@ public class BST<Key extends Comparable<Key>, Value>{
      				previousNode = currentNode;
      				currentNode = null;
      			}
-
      		}
-
      	}
-
      }
 
 
   /*************************************************************************
-      Check integrity of BST data structure.
-   ***************************************************************************/
+      Check integrity of BST data structure (check rep invariant)
+   **********************************************************************/
 
 
 /**
@@ -1058,8 +1240,11 @@ Order is strict: two nodes cannot have the same key.
 		test.insert(12, "new");
 		test.insert(10, "moo");
 		test.insert(6, "yoo");
+		test.insert(4, "yoo");
+		test.insert(2, "yoo");
+		test.insert(7, "yoo");
 		test.insert(9, "Bliss");
-		test.insert(14, "Wes");
+		
 		// System.out.println(test.get(8));
 		// System.out.println(test.get(10));
 		// System.out.println("S: "+ test.successor(10));
@@ -1080,14 +1265,16 @@ Order is strict: two nodes cannot have the same key.
 		// System.out.println("S: "+ test.successor(10));	
 		// System.out.println("S2: "+ test.successor(test.successor(10)));
 
-		// Processable<TreeNode<String, Integer> callback = new Processable<>(){
+		// Processable<TreeNode<String, Integer>> callback = new Processable<>(){
 		//  	public void process(TreeNode t){
 		// 		System.out.println(t.key);
 		// 	}
 		//  };
 		
-
-		System.out.println("inOrderKeys:");
+		System.out.println("Size:" + test.size());
+		test.insert(14, "Wes");
+		System.out.println("Size:" + test.size());
+		System.out.println("preOrderKeys:");
 		
 		for(Integer key: test.keys()){
 			System.out.println(key);

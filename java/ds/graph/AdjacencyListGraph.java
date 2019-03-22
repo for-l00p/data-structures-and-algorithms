@@ -1,6 +1,6 @@
 
 /**
- * 
+
 A tree is a connected graph with no cycles. 
 
 A tree with n nodes has n-1 edges (Proof by induction)
@@ -26,14 +26,15 @@ Most of these questions come down to a tradeoff between complexity (and space) o
 
 Graphs can be represented by:
 
-Edge Lists:  Here edges are first-class objects with their own associated data. Separate unordered sequence (list, array etc.) of edges holding pointers to vertex objects (which can themselves be held in an unordered sequence).
+- Edge Lists:  Here edges are first-class objects with their own associated data. Separate unordered sequence (list, array etc.) of edges holding pointers to vertex objects (which can themselves be held in an unordered sequence).
 Space: O(n+m)
-Con: (1) Difficult to do adjacency quries:
+Con: 
+(1) Difficult to do adjacency queries:
 query all the edges adjacent on a given vertex or vertices adjacent to a given vertex or finding degree or whether two givenvertices are adjacent 
 (2) Removing vertex: will have to go through all the edges O(m),  
 
 
-Adjacency Lists Traditional. Vertices-centred. Array corrsponding to vertices holding refernces to linkedlist<vertex>. (We can store additional information about vertices in this array)
+- Adjacency Lists Traditional. Vertices-centred. Array corresponding to vertices holding refernces to linkedlist<vertex>. (We can store additional information about vertices in this array)
 Space: O(n + m). 
 Pro: Queries about adjacency information can be done in O(deg(v))
 Con:  edge information can be stored, but difficult to retrieve (O n+m) Edges are not first-class objects. 
@@ -46,24 +47,19 @@ Good for sparse, dynamic graphs where edge information is relevant.
 Adjancency Matrix traditional (a two-dimenstional array of 1 and 0).
 Space: O(n^2)
 Adjacency Matrix Modern: a two dimensional array of references to unordered sequence of edge. 
- Pro: If number of vertices is small compared to number of edges (Dense graph)Adjacency queries take order O(n) now (not O(m)), though individual adjacency between given vertex can be checked in O(1). 
- Edge information can be retreived in O(1).
- Con: insertion and removal take O(n^2)
+
+Pro: If number of vertices is small compared to number of edges (Dense graph)Adjacency queries take order O(n) now (not O(m)), though individual adjacency between given vertex can be checked in O(1). 
+
+Edge information can be retreived in O(1).
+Con: insertion and removal take O(n^2)
 
 Good for dense, static graphs  with small number of vertices where edge information is relevant.
 
-Though the exact implementation might be application dependendt. For example, if a very frequent operation you need is to find the vertex with max degree, which would take  O(n) if you maintain degree in adjacency list or matrix, it might be recommended to use the priority queue, which would give you O(1)
+Though the exact implementation might be application dependend. For example, if a very frequent operation you need is to find the vertex with max degree, which would take  O(n) if you maintain degree in adjacency list or matrix, it might be recommended to use the priority queue, which would give you O(1)
+
 https://stackoverflow.com/questions/1945099/java-which-is-the-best-implementation-structure-for-graph
 
-
-
-
 This is an adjacency list implementation. 
-
- there are many different choices to be made when implementing a graph as an adjacency list. Some questions that come up include:
-
-
-
  */
 
 import java.util.Set;
@@ -71,12 +67,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-// import java.util.IllegalArgumentException;
+
 
 // You should make your class final unless you're explicitly intending it to be extended.
  final class AdjacencyListGraph<V extends DegreeVertex,E extends Edge<V>> implements Graph<V,E>{
 
-	private Map<V, Set<V>> adjacencyLists; //. You don't want other classes in your package reaching into a this class and messing with its adjacencies. It would also be reasonable to make it final. Map defines a clear method you can use.
+	private final Map<V, Set<V>> adjacencyLists; //. You don't want other classes in your package reaching into a this class and messing with its adjacencies. It would also be reasonable to make it final. Map defines a clear method you can use.
 
 	// In general, prefer using interfaces where possible. Within your code, the fact that adjList is a HashMap and not a TreeMap is irrelevant. So just refer to it as a Map. As a general rule, it is preferred to use the interface as the type rather than the implementation. This makes it easier to change implementations in the future. Both because you specify the implementation in fewer places and because this forces you to code to the interface.
 

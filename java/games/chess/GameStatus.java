@@ -1,0 +1,3 @@
+enum GameStatus {
+	WHITE_WON, BLACK_WON, GAME_IN_PROGRESS, DRAW
+}

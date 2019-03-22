@@ -28,6 +28,8 @@
  * IMPORTANT PROOF TECHNIQUE: To prove there is no cycle in the graph, prove the existence of an ordering of vertices where all edges are forward. e.g. Order the vertices in decreasing departure times of their BFS.   Forward, tree and cross edges all go from left to right. Hence if there is no back edge, there cannot be a cycle. 
  *
  * Technique: Reverse Edges in a DAG. 
+ *
+https://stackoverflow.com/questions/5278580/non-recursive-depth-first-search-algorithm
  * 
  */
 import java.util.*;
@@ -121,7 +123,6 @@ public class DFSTree<T>{
             if(parentsMap.get(source) == neighour){
              continue;
             } else {
-
               if(cycles.isEmpty()){
                   cycleCount++;
                   //System.out.println("Cycle found with edge between " + source + " and " + neighour);
@@ -134,11 +135,10 @@ public class DFSTree<T>{
                     temp = parentsMap.get(temp);
                  }
                 
-                thisCycle.push(temp);
+              thisCycle.push(temp);
 
                this.cycles.put(cycleCount, thisCycle);
               }
-               
                
                distantBackEdge = Math.min(distantBackEdge, arrivalMap.get(neighour));
             }

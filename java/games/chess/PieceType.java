@@ -1,0 +1,3 @@
+enum PieceType {
+	EMPTY, ROOK, QUEEN, KING, PAWN, KNIGHT, CASTLE;
+}

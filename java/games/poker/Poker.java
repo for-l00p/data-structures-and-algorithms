@@ -15,8 +15,6 @@ final class Poker {
 		
 	}
 
-
-
 	private static int askForMinimumBet(){
 		Scanner in = new Scanner(System.in);
 		System.out.println("Please enter minimum bet:");
