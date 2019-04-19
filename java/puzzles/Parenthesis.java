@@ -5,10 +5,10 @@ import java.util.ArrayDeque;
 
 
 /**
- * Observations For Approach 1: If you push opening braces on as tack, then when every time youu encounter a closing brace, the topmost disk should be its corresponding opening brace.
+ * Observations For Approach 1: If you push opening braces on as stack, then when every time youu encounter a closing brace, the topmost disk should be its corresponding opening brace.
  * O(n) space. O(n) running time
 
- * Observation for Approach 2: For a valid parenthesis, there exists atleast one brace pair with no characters in between. And this must correspond to the rightmost opening brace.
+ * Observation for Approach 2: For a valid parenthesis, there exists atleast one brace pair with no braces in between. And this must correspond to the rightmost opening brace.
  * O(n^2) running time. O(1) space if original string not need, O(n) otherwise for copying the string.
  */
 public class Parenthesis {

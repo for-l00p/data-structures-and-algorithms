@@ -1,12 +1,21 @@
 
 /*
 https://stackoverflow.com/questions/2631726/how-to-determine-the-longest-increasing-subsequence-using-dynamic-programming
-
 https://www.geeksforgeeks.org/longest-monotonically-increasing-subsequence-size-n-log-n/
 
 ----
 
 O(n^2 algorithm):
+
+How is the new information in the bigger problem relevant to the optimal solution? How will it contribute?
+
+When we encounter A[j], it might be part of a global LIS eventually, even though if it is not part of LIS of A[0...j]. So we have to store this relevant information somewhere.
+There are many sequences of which A[j] can become a part.  But we are only interested in the sequence which is the longest such sequence. (Why? Because a shorter solution cannot be part of the globally long, otherwise we could just substitute the shorter with a longer and getter a longer globally long) 
+
+Any longest such sequence (there might be more than one) end with an element which is smaller than A[j].
+
+
+
 
 We maintain solutions to the following subproblem: L(i) contains the length of longest increasing subsequence that ends at A[i] (including A[i]).
 An element A[j] = max(A[k] + 1) where k such that A[k] < A[j]. 
@@ -16,12 +25,16 @@ The global maximal is the solution
 -----
 
 O(nlogn) algorithm
+
+
 The main idea is this:
 
-The main problem in dynamic programming is that the new information might change the makeup of the optimal solution. The subproblem whose solution defines the optimal value might change with new information. And it is difficult to keep track of all the subproblems and compare them. 
+The main problem in dynamic programming is that the new information might change the makeup of the optimal solution. The subproblem whose solution is part of the the optimal value might change with new information. And it is difficult to keep track of all the subproblems and compare them. 
 
 But here, we need not keep track of the solution to ALL the subproblems. Why?  
-Combinatorial insight: If we have two candidate solutions/subsequences of equal length, then we can discard the one which has a larger end element (because if the sequence with a larger end element is a subsequence of the optimal solution, then so will the one with smaller end element.) 
+
+Combinatorial insight:
+If we have two candidate solutions/subsequences of equal length, then we can discard the one which has a larger end element (because if the sequence with a larger end element is a subsequence of the optimal solution, then so will the one with smaller end element.) 
 
 So we keep track of only the longest subsequences of length i with smallest end elements.  All these are candidate solutions.
 
@@ -32,6 +45,8 @@ It can lead to a longer subsequence - of a length j such that our longest candid
 Find the longest candidate solution whose last element is less than a[j]: this will be a new candidate solution. We can find this sequence with in O(logn) time, because of the following invariant:
 Invariant: end element of smaller list is smaller than end elements of larger lists. So the list is sorted.
 Proof: If end element of some smaller list is larger than the end elemtent of a larger list. Then a subsequence of the larger list of size smaller list is a better candidate solution than a smaller list.
+
+
 --
 
 O(n^2 algorithm)
