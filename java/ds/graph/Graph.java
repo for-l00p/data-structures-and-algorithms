@@ -3,10 +3,9 @@ import java.util.Set;
 interface Graph<V,E>{
 
 	/**
-	 * The interface body can contain abstract methods, default methods, and static methods. Default methods are defined with the default modifier, and static methods with the static keyword. All abstract, default, and static methods in an interface are implicitly public, so you can omit the public modifier.
 	 * 
-	 * In addition, an interface can contain constant declarations. All constant values defined in an interface are implicitly public, static, and final. Once again, you can omit these modifiers.
-	 * @return [description]
+	 * An interface can contain constant declarations. All constant values defined in an interface are implicitly public, static, and final. 
+
 	 */
 
 	// Basic container methods 

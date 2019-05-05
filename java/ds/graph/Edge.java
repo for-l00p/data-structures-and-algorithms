@@ -41,20 +41,6 @@ class Edge<V> implements Comparable<Edge<V>>{
 
 	}
 
-/**
- * You should use @Override whenever possible. If a method is annotated with this annotation type but does not override a superclass method, compilers are required to generate an error message. It prevents simple mistakes from being made. Example:
-
-class C {
-    @Override
-    public boolean equals(SomeClass obj){
-        // code ...
-    }
-}
-This doesn't compile because it doesn't properly override public boolean equals(Object obj).
-The same will go for methods that implement an interface (1.6 and above only) or override a Super class's method.
- * @param  edge [description]
- * @return      [description]
- */
 	
 	@Override
 	public int compareTo(Edge<V> edge){

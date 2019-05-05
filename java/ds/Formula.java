@@ -24,19 +24,60 @@ interface Formula {
 	 */
 	
 	public Set<String> variables();
-	public static boolean isSatisfiable(){
-		Set<String> variables = variables();
-		List<Map<String, Boolean>> envList;
-		for (String s: variables ){
-			Map<String, Boolean> environment =  new HashMap<String, Boolean;		}
+
+	// public static boolean isSatisfiable(){
+	// 	Set<String> variables = variables();
+	// 	List<Map<String, Boolean>> envList;
+	// 	for (String s: variables ){
+	// 		Map<String, Boolean> environment =  new HashMap<String, Boolea
 		
-		}
+	// 	}
+	// }
+	// 
+	public R callFunction(FormulaFunction<R> function){
 
-		
 
+	}
 
+	
 
 }
+
+//Interface to define function on formula. What role does a function has to be play, to be considered a function on Formula? It has to be operable on all possible values.
+interface FormulaFunction<R> {
+
+	public R onVariable(Variable f);
+	public R onNot(Not f);
+	public R onOr(Or f);
+	public R onAnd(And f);
+}
+
+
+class VariablesInFormula implements FormulaFunction<Set<String>>{
+
+	@Override
+	public Set<String> onVariable(Variable f){
+		return singletonSet(f.letter);
+	}
+
+	@Override
+	public Set<String> onNot(Not f){
+		return 
+	}
+
+	@Override
+	public Set<String> onOr(Or f){
+		return 
+	}
+
+	@Override
+	public Set<String> onAnd(And f){
+		return setAdd(new VariablesInFormula(f.left), new VariablesInFormula(f.right)
+	}
+
+}
+
+
 
 class Variable implements Formula {
 	
@@ -49,6 +90,10 @@ class Variable implements Formula {
 
 	public Set<String> variables(){
 		return new HashSet<String>(letter);
+	}
+
+	public R callFunction(FormulaFunction<R> f){
+		
 	}
 	
 }
@@ -118,6 +163,9 @@ public class FormulaClient{
 
 	public static void main(String[] args){
 
-		Formula test;
+		Formula f = new Formula();
+		VariablesInFormula getVariables = new VariablesInFormula();
+		Set<String> variables = ?
+
 	}
 }

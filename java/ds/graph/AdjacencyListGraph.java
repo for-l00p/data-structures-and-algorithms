@@ -1,18 +1,38 @@
 
 /**
 
+Assorted Graph Notes:
+
 A tree is a connected graph with no cycles. 
 
 A tree with n nodes has n-1 edges (Proof by induction)
 If the #Edges < n-1, then the graph cannot be connected (Proof by contradiction with earlier assertion that tree has n-1 edges)
 
-An eulerian tour exists iff only all vertices have even degree. 
+An eulerian tour (visit each edge exactly once and return) exists iff only all vertices have even degree (and ofcourse graph has to be connected)
+
+(For comparison: Hamiltonian Cycle visites each vertex exactly once (NP Complete - NP hard && NP - cannot be solved in polynomial time but a yes instance can be verified in polynomial time), Travelling Salesman visits each vertex as many times but is the shortest such path (NP Hard but not NP- cannot be solved in polynomal time, a yes instance cannot be verified to be shortest in polynomial time ), decison variant of TSP (path weighng < k is NP Complete NP hard and an instance can be measured in polynomial time) Knights tour is a special case of Hamiltonian Cycle solvable in linear) 
+
+How do we compute a topologically sorted sequence?
+In a dag, there must be at least one vertex with no incoming edge, or a vertext with indegree 0.  This gives a Notion of a rank: vertex wiith indegree of 0 have rank 0, and vertices of rank i have an incomiing edge from vertices of rank i-1. This rank produces a topological sort.  computing indegree(v) for all v and doing a bfs will produce topological sort
+
+Applications: Edit ladder
+
+In general, finding the longest path in a graph efficiently is difficult. No algorithm short of brute force enumeration of all paths is known for general graphs. However, this can be done if the graph is a dag. There are no cycles because any edge goes respects the dictionary order in the list of words. 
+
+
+Longest Path problem:
+
+Graphs without cycles:
+Trick: Give every edge a weight  -1, and apply Dijstra's
+Directed Graphs: For a dag, we can calculate the longest path by doing a topological sort and finding the maximum rank.
+
+
 
 
 ----------
 
 
-- What type of collection should be used to store each element of adjacency list? One could use an array-based list, a linked-list, or even a hashtable.
+- What type of collection should be used to store each element of adjacency list? One could use a a set, a dynamic array, a linked-list, or a hashtable (which is just an array with object indices).
 
 - Should there be a second adjacency list, inadj, that stores, for each i, the list of vertices, j, such that(j,i) in E$? This can greatly reduce the running-time of the inEdges(i) operation, but requires slightly more work when adding or removing edges.
 
@@ -25,6 +45,7 @@ Most of these questions come down to a tradeoff between complexity (and space) o
 
 
 Graphs can be represented by:
+
 
 - Edge Lists:  Here edges are first-class objects with their own associated data. Separate unordered sequence (list, array etc.) of edges holding pointers to vertex objects (which can themselves be held in an unordered sequence).
 Space: O(n+m)
@@ -48,6 +69,8 @@ Adjancency Matrix traditional (a two-dimenstional array of 1 and 0).
 Space: O(n^2)
 Adjacency Matrix Modern: a two dimensional array of references to unordered sequence of edge. 
 
+
+
 Pro: If number of vertices is small compared to number of edges (Dense graph)Adjacency queries take order O(n) now (not O(m)), though individual adjacency between given vertex can be checked in O(1). 
 
 Edge information can be retreived in O(1).
@@ -59,6 +82,52 @@ Though the exact implementation might be application dependend. For example, if 
 
 https://stackoverflow.com/questions/1945099/java-which-is-the-best-implementation-structure-for-graph
 
+
+
+A two-array implementation: A more efficient option is to maintain two linear arrays.
+
+           Offset              Neighbours
+       1      1    -------------->  2
+       2      3    ------------     3
+       3      5    ----------  |->  1
+       4      9    --------  |      3
+       5     10    ------  | |--->  1
+       6     12    ----  | |        2
+       7     14    --  | | |        4
+                     | | | |        6
+                     | | |  ----->  3
+                     | |  ------->  6
+                     | |            7
+                     |  --------->  5
+                     |              7
+                      ----------->  5
+                                    6
+      
+Offset[i] stores the position in Neighbours where the neighbours of vertex i begin. To examine all neighbours of vertex i, scan Neighbours[Offset[i]], Neighbours[Offset[i]]+1, … Neighbours[Offset[i+1]]-1. however, that adding edges in this representation is complicated.
+
+Another way is to represent the list of neighbours using two arrays as follows. Here, each neighbour points (via "Next") to the next neighbour, until the last neighbour which has Next = -1.
+
+           Offset                 Node  Next
+       1      1    -------------->  2    2
+       2      3    ------------     3   -1
+       3      5    ----------  |->  1    4
+       4      9    --------  |      3   -1
+       5     10    ------  | |--->  1    6
+       6     12    ----  | |        2    7
+       7     14    --  | | |        4    8
+                     | | | |        6    9
+                     | | |  ----->  3   -1
+                     | |  ------->  6   11
+                     | |            7   -1
+                     |  --------->  5   13
+                     |              7   -1
+                      ----------->  5   15
+                                    6   -1
+
+
+
+
+
 This is an adjacency list implementation. 
  */
 
@@ -69,13 +138,29 @@ import java.util.HashSet;
 import java.util.List;
 
 
-// You should make your class final unless you're explicitly intending it to be extended.
- final class AdjacencyListGraph<V extends DegreeVertex,E extends Edge<V>> implements Graph<V,E>{
 
-	private final Map<V, Set<V>> adjacencyLists; //. You don't want other classes in your package reaching into a this class and messing with its adjacencies. It would also be reasonable to make it final. Map defines a clear method you can use.
+class Edge<VertexT>{
 
-	// In general, prefer using interfaces where possible. Within your code, the fact that adjList is a HashMap and not a TreeMap is irrelevant. So just refer to it as a Map. As a general rule, it is preferred to use the interface as the type rather than the implementation. This makes it easier to change implementations in the future. Both because you specify the implementation in fewer places and because this forces you to code to the interface.
+	VertexT source;
+	VertexT destination;
+	boolean isDirected;
+	int weight;
 
+}
+
+
+class DegreeVertex {
+	int inDegree;
+	int outDegree;
+	int degree;
+	String label;
+
+}
+
+
+ final class AdjacencyListGraph<V extends DegreeVertex, E extends Edge<V>> implements Graph<V,E>{
+
+	private final Map<V, Set<V>> adjacencyLists; 
 	private int edgeCount;
 	private final boolean isDirected = false;
 	// private final boolean weighted;
@@ -198,80 +283,7 @@ import java.util.List;
 
 }
 
-interface Graph<V,E>{
 
-
-	/**
-	 * The interface body can contain abstract methods, default methods, and static methods. Default methods are defined with the default modifier, and static methods with the static keyword. All abstract, default, and static methods in an interface are implicitly public, so you can omit the public modifier.
-	 * 
-	 * In addition, an interface can contain constant declarations. All constant values defined in an interface are implicitly public, static, and final. Once again, you can omit these modifiers.
-	 * @return [description]
-	 */
-
-	// Basic container methods 
-	int size();
-	boolean isEmpty();
-	void replaceElement(V vertex);
-	void swap(V vertex1, V vertex2);
-	int numVertices();
-	int numEdges();
-	Set<E> getEdges();
-	Set<V> getVertices();
-
-
-	//container modification methods
-	boolean addVertex(V vertex);
-	boolean addEdge(E edge);
-	//  void addDirectedEdge(E edge);
-	void removeVertex(V vertex);
-	void removedEdge(E edge);
-
-	void setRoot(V vertex);
-
-	//  void hasCycle();
-	//  void isConnected();
-	// makeUndirected();
-	// reverseDirection();
-
-	//Vertex Adjacency methods
-	Set<V> getNeighbours(V vertex);
-	Set<E> getIncidentEdges(V vertex);
-	Set<E> inIncidentEdges(V vertex);
-	Set<E> outIncidentEdges(V vertex);
-	boolean isNeighbour(V vertex1, V vertex2);
-	int degree(V vertex);
-	int inDegree(V vertex);
-	int outDegree(V vertex);
-
-	//Edge related methods
-	Set<V> endVertices(E edge);
-
-	V origin(E edge);
-	V destination(E edge);
-    // V opposite(E edge);
-    boolean isDirected(E edge);
-
-
-}
-
-
-class Edge<VertexT>{
-
-	VertexT source;
-	VertexT destination;
-	boolean isDirected;
-	int weight;
-
-}
-
-
-class DegreeVertex{
-	int inDegree;
-	int outDegree;
-	int degree;
-	String label;
-
-}
 
 
 

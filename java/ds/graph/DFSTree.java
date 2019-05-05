@@ -5,7 +5,7 @@
  *  Dependencies: Graph.java 
  *  Data files:   
  *
- *  Run breadth first search on a graph.
+ *  Run depth first search on a graph.
  *  Runs in O(E + V) time.
 
  *
@@ -13,25 +13,23 @@
 
 
 /**
- * Notes:
- *
- * A graph is bipartite <-> any BFS tree does not have an edge between two vertices on the same level <-> there are no odd cycles in the graph
- *
- * https://www.geeksforgeeks.org/bridge-in-a-graph/
- *
- * O(V + E) (linear)running time for finding if a graph is 2 connected. 
- *
- * A DFS only has tree edges and back edges. If there are no back edges, there are just tree edges, implying that there is no cycle. 
- *
- * In a directed graph, the edges are DFS tree edges, back edges, cross edges and forward edges. 
- *
- * IMPORTANT PROOF TECHNIQUE: To prove there is no cycle in the graph, prove the existence of an ordering of vertices where all edges are forward. e.g. Order the vertices in decreasing departure times of their BFS.   Forward, tree and cross edges all go from left to right. Hence if there is no back edge, there cannot be a cycle. 
- *
- * Technique: Reverse Edges in a DAG. 
- *
+ 
+https://www.geeksforgeeks.org/bridge-in-a-graph/
+
+O(V + E) (linear)running time for finding if a graph is 2 connected (articulation edges) 
+
+A DFS only has tree edges and back edges. If there are no back edges, there are just tree edges, implying that there is no cycle. 
+
+In a directed graph, the edges are DFS tree edges, back edges, cross edges and forward edges. 
+
+IMPORTANT PROOF TECHNIQUE: To prove there is no cycle in the graph, prove the existence of an ordering of vertices where all edges are forward. e.g. Order the vertices in decreasing departure times of their BFS.   Forward, tree and cross edges all go from left to right. Hence if there is no back edge, there cannot be a cycle. 
+
+Technique: Reverse Edges in a DAG.
 https://stackoverflow.com/questions/5278580/non-recursive-depth-first-search-algorithm
- * 
- */
+ 
+*/
+
+
 import java.util.*;
 
 public class DFSTree<T>{
@@ -72,7 +70,6 @@ public class DFSTree<T>{
       for(T vertex: graph.getVertices()){
         visitedMap.put(vertex,0);
       }
-  
       
         traverseDFS(graph, source);
         bridges.remove(source);
@@ -187,8 +184,7 @@ public class DFSTree<T>{
     }
   }
 
-   
-
+  
    public void printVisitedMap(){
       StringBuilder s = new StringBuilder(); 
       for(Map.Entry<T, Integer>  entry: visitedMap.entrySet()){
@@ -231,11 +227,7 @@ public class DFSTree<T>{
    }
 
 
-
-
     public static void main(String[] args){
-
-    
       Graph<String, Edge<String>> testGraph = new ModernAdjacencyList<>(true);
       testGraph.addVertex("Delhi");
       testGraph.addVertex("Gurgaon");
@@ -266,17 +258,6 @@ public class DFSTree<T>{
       DFSTree<String> testDFS = new DFSTree<>(testGraph, "Chandigarh");
       System.out.println(testDFS.is2C());
       testDFS.printCycle();
-
-      
-    
-
-
-
-
-
-      
-    
-
 
   }
 }

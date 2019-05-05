@@ -215,14 +215,10 @@ public class GraphAdjacencyMatrix implements Graph<Integer, Edge<Integer> >{
 
 
 	public static void main(String[] args){
-
 		GraphAdjacencyMatrix test = new GraphAdjacencyMatrix(10);
 		test.addEdge(0, 1);
 		System.out.println(test.vertexCount());
 		System.out.println(test.edgeCount());
-
 	}
-
-
 
 }

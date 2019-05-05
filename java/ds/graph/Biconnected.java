@@ -1,7 +1,9 @@
 import java.util.*;
 
 /**
- * Suppose a graph has a bridge edge. Then consider one of its end points. By removing that vertex, we are also removing that edge and hence disconnecting the graph. So a graph has a bridge edge implies it has an articulation point.
+ 
+
+Suppose a graph has a bridge edge. Then consider one of its end points. By removing that vertex, we are also removing that edge and hence disconnecting the graph. So a graph has a bridge edge implies it has an articulation point.
 
 Note that this proof has a minor flaw. It does not consider the case when one of the connected components obtained after removing the edge has a single vertex. So the above statement fails when the graph is just two vertices and an edge between them (or if the graph is disconnected, this is one connected component of it). This is in fact the only case where the above statement is false.
 
@@ -24,7 +26,7 @@ https://en.wikipedia.org/wiki/Biconnected_component#Linear_time_depth_first_sear
 
  */
 
-public class Biconnected{
+public class Biconnected {
 
 	private boolean[] articulation;
 	private int[] arrival; // We use arrival array to calculate earliestLink values. We could, instead, use a depth[v] or numberVerticesBeforeinDFS[v] for earliestLink values. depth[v] would work because there are no cross edges, so all the backedges would have lower depth. 
@@ -174,15 +176,6 @@ public class Biconnected{
       testGraph.addEdge(4, 5);
       testGraph.addEdge(2, 3);
 
-      // testGraph.addEdge(1, 0);
-      // testGraph.addEdge(8, 5);
-      // testGraph.addEdge(3, 6);
-      // testGraph.addEdge(8, 9);
-      // testGraph.addEdge(0, 5);
-      // testGraph.addEdge(0, 4);
-      // testGraph.addEdge(5, 4);
-      // testGraph.addEdge(9, 4);
-      // testGraph.addEdge(4, 7);
       System.out.println(testGraph.vertexCount());
       System.out.println(testGraph.edgeCount());
       System.out.println(testGraph.toString());

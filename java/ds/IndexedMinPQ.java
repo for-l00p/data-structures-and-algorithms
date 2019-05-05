@@ -1,6 +1,6 @@
 /**
- * 
- * In many applications, it makes sense to allow clients to refer to items that are already on the priority queue. One easy way to do so is to associate a unique integer index with each item.
+ * In many applications, it makes sense to allow clients to refer to items that are already on the priority queue.  (e.g. To perform the operation known as "update-priority" on the element that you've already inserted). One easy way to do so is to associate a unique integer index with each item.  To simulate this without indexes, you'd have to do this: you have to remove and re-insert, as the queue works by putting new elements in the appropriate position when they are inserted.   For priority queues implemented using arrays, this can be a performance bottleneck that seems avoidable, especially for cases when the change to priority is small.
+ * A second solution:you can move the comparison code from enqueue to dequeue. You would not need to sort at enqueue time anymore (because the order it creates would not be reliable anyway if you allow changes). But this will perform worse, and you want to synchronize on the queue if you change any of the priorities. The usual solution is to mark an element as invalid and insert a new element, then eliminate the invalid entries as they are popped-off.)
  * 
  * In this indexed Priority Queue, we store a mapping from the priorities (given by heap[j]) in a heap to their assosciated objects. The objects are stored in a separate array (keys []). By referring to the index of the object array, and traversing the mapping, we can get a pointer to an object's position in a heap. The heapIndex of an object at index i is stored in qp[i]. 
  *
@@ -9,9 +9,12 @@
 
 import java.util.*;
 
-// Are there indices of the the keys[] that are not represented in the heap? Yes. Can we check, given a key index, whether it is part of the heap or not? Yes:  contains method
-//
-// Keys are just Priorities
+/**
+Are there indices of the the keys[] that are not represented in the heap? Yes. Can we check, given a key index, whether it is part of the heap or not? Yes:  contains method
+
+Keys are just Priorities
+**/
+
 
 public class IndexedMinPQ<Key extends Comparable<Key>> implements Iterable<Key>{
 
@@ -20,10 +23,6 @@ public class IndexedMinPQ<Key extends Comparable<Key>> implements Iterable<Key>{
 	ArrayList<Key> keys;
 	private int size;
 	private int maxSize;
-
-
-
-
 
 	public IndexedMinPQ(int maxSize){
 
@@ -265,19 +264,14 @@ public class IndexedMinPQ<Key extends Comparable<Key>> implements Iterable<Key>{
 		test.insert(7, "Thailand");
 		test.insert(9, "Gurgaon");
 
-		
 		for(String key: test){
 			System.out.println(key);
 		}
 
-
 		System.out.println("Done. Now updating key");
 
 		//test.delete(0);
-
-
 		test.changeKey(5, "Indonesia");
-
 
 		for(String key: test){
 			System.out.println(key);

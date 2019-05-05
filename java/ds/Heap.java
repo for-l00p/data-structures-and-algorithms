@@ -1,10 +1,8 @@
 /**
- *Resources: 
+ *  Resources: 
  *  https://algs4.cs.princeton.edu/24pq/
- * https://cs.stackexchange.com/questions/27860/whats-the-difference-between-a-binary-search-tree-and-a-binary-heap
- *
- *
- * 
+ *  https://cs.stackexchange.com/questions/27860/whats-the-difference-between-a-binary-search-tree-and-a-binary-heap
+
  * Heaps are an implementation of ADT called Priority Queues. Priority Queues need to support the following operations:
  * - insert
  * - delete-min
@@ -13,8 +11,7 @@
  * Priority Queues require a total order on the objects in the data type, implemented by a Comparator object called Comparator external to the objects being stored. 
  * 
  * Applications:
- * - job scheduling in Unix using shared computer resources (the job requiring the least amount of time)
- * 
+ * - job scheduling in Unix using shared computer resources (the job requiring the least amount of time) 
 
  * Implemented with unsorted sequence: insert takes O(1), delete-min and min take O(n)
  * Implemented with sorted sequence: delete-min and min take O(1) and insert takes O(n)
@@ -63,13 +60,10 @@
  * Can implement with arrays. 
  * Heapify: Assume both subtrees are a heap, and node i violates heap property. successively replace with the lesser sibling. Traces a path down - argue correctneess. 
  *
- * Building a heap: we could insert successively, resulting in log1 + log2 + ...logn running time = O(n!) = O(nlogn)
+ * Building a heap: we could insert successively, resulting in log1 + log2 + ...logn running time = O(log(n!)) = O(nlogn)
  *  HeapSort: creat a heap, successively deleteMin and put it at the very end (to sort in place). 
- *
  * A comparator object is external to the classes of objects which it allows you to compare: since priorities can differ over time in the same application and same data structure. So in priority queue applications, it is not sufficient to use Comparable Values: one must provide a comparator object. 
- *
- *
- * 
+
  */
 
 
@@ -82,11 +76,14 @@ import java.util.NoSuchElementException;
 
 public class Heap<Value extends Comparable<Value>> implements MinPriorityQueue<Value>, Iterable<Value>{
 
-// Advantage of putting the nodes of a heap in an array: Save on memory overhead, get more speed from data locality. an explicit tree would use up more memory than an array.The pointers of the tree use a lot of memory, compared to the array-based heap, where you barely need any additional space but the one taken by the values themselves. And manipulating these pointers takes time too.  array has better cache locality and thus much better runtime in practice, Allocating and deallocating nodes might take some time and space also. , 
-// 
+// Advantage of putting the nodes of a heap in an array: Save on memory overhead, get more speed from data locality. An explicit tree would use up more memory than an array. The pointers of the tree use a lot of memory, compared to the array-based heap, where you barely need any additional space but the one taken by the values themselves. And manipulating these pointers takes time too.  Array has better cache locality and thus much better runtime in practice. Allocating and deallocating nodes might take some time and space also. 
+
 // For a sparse tree most of array positions will be wasted. it will still make sense to use array based implementation when you know size of tree in advance and know that it will be a dense tree.
 
 // Starting the heap at index 1 will probably make faster calculation of parent, left and right child indexes. On most computers, the LEFT procedure can compute 2*i in one instruction by simply shifting the binary representation of i left by one bit position. Similarly, the RIGHT procedure can quickly compute 2*i+1 by shifting the binary representation of i left by one bit position and then adding in a 1 as the low-order bit. The PARENT procedure can compute i/2 by shifting i right one bit position. 
+
+// There's no reason why a heap implemented in an array has to leave the item at index 0 unused. If you put the root at 0, then the item at array[ix] has its children at array[ix*2+1] and array[ix*2+2]. The node at array[child] has its parent at array[(child-1)/2].
+
 
 	private ArrayList<Value> values;
 	private int size;
@@ -173,9 +170,6 @@ public class Heap<Value extends Comparable<Value>> implements MinPriorityQueue<V
 
 	}
 
-	// public Value deleteMin(){
-
-	// }
 
 	public void insert(Value value){
 
@@ -462,9 +456,5 @@ public class Heap<Value extends Comparable<Value>> implements MinPriorityQueue<V
     	System.out.println(iterato.next());
 
     }
-
-
-
-
 
 }
